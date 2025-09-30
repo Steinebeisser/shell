@@ -6,6 +6,7 @@
 #include "color_utils.h"
 #include "config.h"
 #include <limits.h>
+#include "platform/getline.h"
 
 typedef bool (*ConfigHandler)(const char *value);
 

@@ -23,13 +23,17 @@ int main(int argc, char **argv) {
         "src/core/shell.c",
         "src/core/repl.c",
         "src/core/shell_print.c",
+
         "src/commands/builtins.c",
-        "src/commands/externals.c",
         "src/commands/commands.c",
+
         "src/config/config.c",
         "src/config/rc_parser.c",
         "src/config/color_utils.c",
         "src/config/alias.c",
+
+        "src/platform/unix/externals.c",
+        "src/platform/windows/externals.c",
     };
 
     Nob_Cmd cmd = {0};

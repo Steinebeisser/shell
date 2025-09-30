@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #define MAX_ALIASES 128
 #define MAX_KEY_LEN 32
@@ -20,6 +21,9 @@ typedef struct {
     char prompt[64];
     Alias aliases[MAX_ALIASES];
     size_t alias_count;
+    int64_t timeout;
+    bool show_full_cmd_path;
+    bool show_full_alias_cmd;
 } ShellConfig;
 
 extern ShellConfig shell_config;
@@ -29,6 +33,9 @@ bool set_warn_color(const char *value);
 bool set_error_color(const char *value);
 bool set_prompt(const char *value);
 bool set_alias(const char *key, const char *value);
+bool set_timeout(const char *value);
+bool set_show_cmd_path(const char *value);
+bool set_show_expanded_alias(const char *value);
 const char *get_alias(const char *key);
 
 bool load_rc_file();

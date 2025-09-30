@@ -5,6 +5,7 @@
 #include "commands/commands.h"
 #include "shell_print.h"
 #include "config/config.h"
+#include "platform/getline.h"
 
 void repl_loop()  {
     char *line = NULL;

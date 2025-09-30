@@ -6,7 +6,7 @@
 #include "core/shell_print.h"
 
 int execute_builtin(int argc, char **args) {
-    LOG_DEBUG("Testing if Builtin exists: %s, with %llu additional args", args[0], argc - 1);
+    LOG_DEBUG("Testing if Builtin exists: %s, with %d additional args", args[0], argc - 1);
 
     if (strcmp(args[0], "exit") == 0) {
         int exit_code = 0;

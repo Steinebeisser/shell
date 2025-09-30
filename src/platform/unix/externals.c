@@ -1,4 +1,6 @@
-#include "externals.h"
+#if defined(__unix__)
+
+#include "commands/externals.h"
 
 #define PGS_LOG_STRIP_PREFIX
 #include "third_party/pgs_log.h"
@@ -26,3 +28,4 @@ bool execute_external(int argc, char **args) {
     }
 }
 
+#endif

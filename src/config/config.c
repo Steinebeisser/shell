@@ -15,6 +15,9 @@ ShellConfig shell_config = {
     .prompt = "Shell > ",
     .aliases = {},
     .alias_count = 0,
+    .timeout = 10000,
+    .show_full_cmd_path = false,
+    .show_full_alias_cmd = false,
 };
 
 bool set_info_color(const char *value) {
@@ -41,6 +44,21 @@ bool set_alias(const char *key, const char *value) {
 
 const char *get_alias(const char *key) {
     return get__alias(key);
+}
+
+bool set_timeout(const char *value) {
+    (void)value;
+    return true;
+}
+
+bool set_show_cmd_path(const char *value) {
+    (void)value;
+    return true;
+}
+
+bool set_show_expanded_alias(const char *value) {
+    (void)value;
+    return true;
 }
 
 bool load_rc_file() {
