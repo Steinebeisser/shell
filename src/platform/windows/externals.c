@@ -212,7 +212,7 @@ bool execute_external(int argc, char **argv) {
         return true; // we print msg from ffailed execution, treat as handled
     }
 
-    DWORD wait = WaitForSingleObject(piProcInfo.hProcess, shell_config.timeout == -1 ? INFINITE : shell_config.timeout);
+    DWORD wait = WaitForSingleObject(piProcInfo.hProcess, shell_config.timeout <= 0 ? INFINITE : shell_config.timeout);
     if (wait == WAIT_TIMEOUT) {
         shell_print(SHELL_ERROR, "Timed out, terminating. Wait Timeout: %d ms\n", shell_config.timeout);
         LOG_ERROR("Timed out, terminating. Wait Timeout: %d ms", shell_config.timeout);
@@ -221,7 +221,14 @@ bool execute_external(int argc, char **argv) {
     }
 
     DWORD exit_code = 1;
-    GetExitCodeProcess(piProcInfo.hProcess, &exit_code);
+    if (!GetExitCodeProcess(piProcInfo.hProcess, &exit_code)) {
+        LOG_ERROR("GetExitCodeProcess failed: %lu", GetLastError());
+        exit_code = 1;
+    }
+
+    if (shell_config.show_exit_code) {
+        shell_print(SHELL_INFO, "%s exited with Exit Code: %u\n", argv[0], exit_code);
+    }
 
     CloseHandle(piProcInfo.hProcess);
     CloseHandle(piProcInfo.hThread);

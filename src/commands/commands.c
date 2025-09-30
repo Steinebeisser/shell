@@ -6,6 +6,7 @@
 #include "third_party/pgs_log.h"
 #include "core/shell_print.h"
 
+#include "config/config.h"
 #include "config/alias.h"
 
 #include <stdio.h>
@@ -56,7 +57,7 @@ bool execute_command(int argc, char **argv) {
                 }
             }
             // TODO: raw mode to not auto insert newline on command enter so we can put on same line
-            shell_print(SHELL_INFO, temp_sprintf("(%s)\n", full_alias_cmd));
+            if (shell_config.show_full_alias_cmd) shell_print(SHELL_INFO, temp_sprintf("(%s)\n", full_alias_cmd));
         }
     }
 

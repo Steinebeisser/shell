@@ -7,6 +7,7 @@
 #include "rc_parser.h"
 #include "color_utils.h"
 #include "alias.h"
+#include "util.h"
 
 ShellConfig shell_config = {
     .info_color = 97,
@@ -18,6 +19,7 @@ ShellConfig shell_config = {
     .timeout = 10000,
     .show_full_cmd_path = false,
     .show_full_alias_cmd = false,
+    .show_exit_code = false,
 };
 
 bool set_info_color(const char *value) {
@@ -52,12 +54,17 @@ bool set_timeout(const char *value) {
 }
 
 bool set_show_cmd_path(const char *value) {
-    (void)value;
+    shell_config.show_full_cmd_path = parse_bool(value, shell_config.show_full_cmd_path);
     return true;
 }
 
 bool set_show_expanded_alias(const char *value) {
-    (void)value;
+    shell_config.show_full_alias_cmd = parse_bool(value, shell_config.show_full_alias_cmd);
+    return true;
+}
+
+bool set_show_exit_code(const char *value) {
+    shell_config.show_exit_code = parse_bool(value, shell_config.show_exit_code);
     return true;
 }
 

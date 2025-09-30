@@ -24,6 +24,7 @@ typedef struct {
     int64_t timeout;
     bool show_full_cmd_path;
     bool show_full_alias_cmd;
+    bool show_exit_code;
 } ShellConfig;
 
 extern ShellConfig shell_config;
@@ -37,6 +38,7 @@ bool set_timeout(const char *value);
 bool set_show_cmd_path(const char *value);
 bool set_show_expanded_alias(const char *value);
 const char *get_alias(const char *key);
+bool set_show_exit_code(const char *value);
 
 bool load_rc_file();
 

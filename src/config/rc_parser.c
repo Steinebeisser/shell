@@ -20,6 +20,9 @@ Options options[] = {
     {"warn_color",  set_warn_color},
     {"error_color", set_error_color},
     {"prompt",      set_prompt},
+    {"show_cmd_path", set_show_cmd_path},
+    {"show_expanded_alias", set_show_expanded_alias},
+    {"show_exit_code", set_show_exit_code},
 };
 
 bool expand_path(const char *unresolved_path, char *expanded_path, size_t path_len) {

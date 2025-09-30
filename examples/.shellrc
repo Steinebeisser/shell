@@ -1,0 +1,47 @@
+: Hello this is an example shellrc file for stein shell
+: it will have all possible settings with an explenation
+
+: everyting will be the default value
+: the syntax of the file is 
+: set
+: [optional] (<modifier>) like alias
+: =
+: value     value can either be a known option or a string
+
+: if u are using vim or nvim i sugges copying the syntax file into ur syntax directory and st an autocmd that turns .shellrc into filetype `stein_shellrc`
+: this will give u highlighting
+
+: sets color of sgell messsages, currently theres 3 types
+:   info
+:   warn
+:   error
+: the shell prompt is printed with info
+: u can also directly print the ansi escape sequance equivalent
+set info_color = bright_white
+set warn_color = bright_yellow
+set error_color = bright_red
+: options:
+:   black red green yellow blue magenta cyan white
+:   bright_black bright_red bright_green bright_yellow bright_blue bright_magenta bright_cyan bright_white
+
+: if u want to set a custom shell, limited by 64 chars
+set prompt = "Shell > "
+
+: you can set aliases using set(alias), currently only expands once
+set(alias) ls = ls -l
+
+
+: if u want to see to what the command expands
+: for example u call git which then expands to /usr/bin/git
+set show_cmd_path = false
+
+: if u want to see what the alias expands to
+: for example u have alias `set(alias) ls = ls -l` this would then print (ls -l) behind ur input
+set show_expanded_alias = false
+
+: to set a custom timeout for commands, anything negative or 0 will equal to no timeout, value is in ms
+: currently only works on windows
+set timeout = -1
+
+: if u want to automatically see the exit code of programs
+set show_exit_code = 1
