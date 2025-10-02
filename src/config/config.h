@@ -6,13 +6,22 @@
 #include <stdint.h>
 
 #define MAX_ALIASES 128
-#define MAX_KEY_LEN 32
-#define MAX_VALUE_LEN 128
+#define MAX_ALIAS_KEY_LEN 32
+#define MAX_ALIAS_VALUE_LEN 128
+
+#define MAX_ENVS 256
+#define MAX_ENV_KEY_LEN 64
+#define MAX_ENV_VALUE_LEN 256
 
 typedef struct {
-    char key[MAX_KEY_LEN];
-    char value[MAX_VALUE_LEN];
+    char key[MAX_ALIAS_KEY_LEN];
+    char value[MAX_ALIAS_VALUE_LEN];
 } Alias;
+
+typedef struct {
+    char key[MAX_ENV_KEY_LEN];
+    char value[MAX_ENV_VALUE_LEN];
+} Env;
 
 typedef struct {
     int info_color;
@@ -25,6 +34,9 @@ typedef struct {
     bool show_full_cmd_path;
     bool show_full_alias_cmd;
     bool show_exit_code;
+    Env envs[MAX_ENVS];
+    size_t env_count;
+    bool allow_env_override;
 } ShellConfig;
 
 extern ShellConfig shell_config;
@@ -39,6 +51,10 @@ bool set_show_cmd_path(const char *value);
 bool set_show_expanded_alias(const char *value);
 const char *get_alias(const char *key);
 bool set_show_exit_code(const char *value);
+bool set_env(const char *key, const char *value);
+bool unset_env(const char *key);
+const char *get_env(const char *key);
+bool set_allow_env_override(const char *value);
 
 bool load_rc_file();
 

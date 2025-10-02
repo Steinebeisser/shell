@@ -80,8 +80,8 @@ bool set__alias(const char *key, const char *value) {
 
     for (size_t i = 0; i < shell_config.alias_count; ++i) {
         if (strcmp(shell_config.aliases[i].key, key) == 0) {
-            strncpy(shell_config.aliases[i].value, value, MAX_VALUE_LEN - 1);
-            shell_config.aliases[i].value[MAX_VALUE_LEN - 1] = '\0';
+            strncpy(shell_config.aliases[i].value, value, MAX_ALIAS_VALUE_LEN - 1);
+            shell_config.aliases[i].value[MAX_ALIAS_VALUE_LEN - 1] = '\0';
             return true;
         }
     }
@@ -89,11 +89,11 @@ bool set__alias(const char *key, const char *value) {
     if (shell_config.alias_count >= MAX_ALIASES) return false;
 
     Alias *alias = &shell_config.aliases[shell_config.alias_count++];
-    strncpy(alias->key, key, MAX_KEY_LEN - 1);
-    alias->key[MAX_KEY_LEN - 1] = '\0';
+    strncpy(alias->key, key, MAX_ALIAS_KEY_LEN - 1);
+    alias->key[MAX_ALIAS_KEY_LEN - 1] = '\0';
 
-    strncpy(alias->value, value, MAX_VALUE_LEN - 1);
-    alias->value[MAX_VALUE_LEN - 1] = '\0';
+    strncpy(alias->value, value, MAX_ALIAS_VALUE_LEN - 1);
+    alias->value[MAX_ALIAS_VALUE_LEN - 1] = '\0';
 
     LOG_DEBUG("Set: %s, as alias for %s", key, value);
 

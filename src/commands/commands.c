@@ -4,10 +4,12 @@
 
 #define PGS_LOG_STRIP_PREFIX
 #include "third_party/pgs_log.h"
-#include "core/shell_print.h"
 
+#include "core/shell_print.h"
 #include "config/config.h"
 #include "config/alias.h"
+#include "config/env.h"
+#include "util.h"
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -19,6 +21,7 @@ bool execute_command(int argc, char **argv) {
     if (argc == 0) return false;
 
     const char *alias_value = get__alias(argv[0]);
+
 
     int execute_argc = argc;
     char **execute_argv = argv;
@@ -42,24 +45,31 @@ bool execute_command(int argc, char **argv) {
 
         free(alias_args);
 
-        char *full_alias_cmd = NULL;
-        size_t total_length = 0;
-        for (int i = 0; i < execute_argc; i++) {
-            if (execute_argv[i]) total_length += strlen(execute_argv[i]) + 1;
-        }
-        full_alias_cmd = malloc(total_length + 1);
-        if (full_alias_cmd) {
-            full_alias_cmd[0] = '\0';
+        if (shell_config.show_full_alias_cmd) {
+            char *full_alias_cmd = NULL;
+            size_t total_length = 0;
             for (int i = 0; i < execute_argc; i++) {
-                if (execute_argv[i]) {
-                    if (i > 0) strcat(full_alias_cmd, " ");
-                    strcat(full_alias_cmd, execute_argv[i]);
-                }
+                if (execute_argv[i]) total_length += strlen(execute_argv[i]) + 1;
             }
-            // TODO: raw mode to not auto insert newline on command enter so we can put on same line
-            if (shell_config.show_full_alias_cmd) shell_print(SHELL_INFO, temp_sprintf("(%s)\n", full_alias_cmd));
+            full_alias_cmd = malloc(total_length + 1);
+            if (full_alias_cmd) {
+                full_alias_cmd[0] = '\0';
+                for (int i = 0; i < execute_argc; i++) {
+                    if (execute_argv[i]) {
+                        if (i > 0) strcat(full_alias_cmd, " ");
+                        strcat(full_alias_cmd, execute_argv[i]);
+                    }
+                }
+                // TODO: raw mode to not auto insert newline on command enter so we can put on same line
+                shell_print(SHELL_INFO, temp_sprintf("(%s)\n", full_alias_cmd));
+                free(full_alias_cmd);
+            }
         }
     }
+
+    if (!expand_envs(execute_argc, execute_argv)) return false; // only returns false if failed to expand, if there are none returns true
+
+    if (!expand_stuff(execute_argc, execute_argv)) return false;
 
     bool result = execute_builtin(execute_argc, execute_argv);
     if (!result) {

@@ -66,8 +66,12 @@ bool execute_external(int argc, char **argv) {
         if (shell_config.show_exit_code) {
             shell_print(SHELL_INFO, "%s exited with Exit Code: %d\n", argv[0], WEXITSTATUS(status));
         }
+        free(resolved_path);
         return true; //WIFEXITED(status) && WEXITSTATUS(status) == 0;
     }
+
+    free(resolved_path);
+    return false;
 }
 
 #endif

@@ -8,6 +8,8 @@
 #include "color_utils.h"
 #include "alias.h"
 #include "util.h"
+#include "env.h"
+#include "core/shell_print.h"
 
 ShellConfig shell_config = {
     .info_color = 97,
@@ -20,6 +22,11 @@ ShellConfig shell_config = {
     .show_full_cmd_path = false,
     .show_full_alias_cmd = false,
     .show_exit_code = false,
+    .envs = {
+        { .key = "rc", .value = "~/.shellrc" },
+    },
+    .env_count = 1,
+    .allow_env_override = false,
 };
 
 bool set_info_color(const char *value) {
@@ -68,6 +75,37 @@ bool set_show_exit_code(const char *value) {
     return true;
 }
 
+bool set_env(const char *key, const char *value) {
+    return set__env(key, value);
+}
+
+bool unset_env(const char *key) {
+    return unset__env(key);
+}
+
+const char *get_env(const char *key) {
+    return get__env(key);
+}
+
+bool set_allow_env_override(const char *value) {
+    shell_config.allow_env_override = parse_bool(value, shell_config.allow_env_override);
+    return true;
+}
+
+bool init_shell_config() {
+    for (size_t i = 0; i < shell_config.env_count; i++) {
+        if (setenv(shell_config.envs[i].key, shell_config.envs[i].value, 1) != 0) {
+            shell_print(SHELL_ERROR, "Failed to set envs for shell config init\n");
+            LOG_ERROR("Failed to set envs for shell config init");
+            return false;
+        }
+    }
+    return true;
+}
+
 bool load_rc_file() {
+    if (!init_shell_config()) {
+        return false;
+    }
     return load__rc_file();
 }

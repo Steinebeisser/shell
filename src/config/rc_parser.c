@@ -23,6 +23,7 @@ Options options[] = {
     {"show_cmd_path", set_show_cmd_path},
     {"show_expanded_alias", set_show_expanded_alias},
     {"show_exit_code", set_show_exit_code},
+    {"allow_env_override", set_allow_env_override},
 };
 
 bool expand_path(const char *unresolved_path, char *expanded_path, size_t path_len) {
@@ -86,28 +87,40 @@ bool parse_rc_line(const char *line) {
     char comment_char = ':';
 
     char *line2 = strdup(line);
+    char *line2_start = line2;
 
-    if (!line2) return false;
+    bool ret = false;
+
+    if (!line2) goto cleanup;
 
     line2 = clear_left(line2);
 
-    if (*line2 == comment_char || *line2 == '\0' || *line2 == '\n') return true;
+    if (*line2 == comment_char || *line2 == '\0' || *line2 == '\n') {
+        ret = true;
+        goto cleanup;
+    }
 
     if (strncmp(line2, "set", 3) != 0) {
         LOG_WARN("Unkown RC command %s", line2);
-        return false;
+        ret = false;
+        goto cleanup;
     }
     line2 += 3;
 
     bool is_alias = false;
+    bool is_env = false;
     line2 = clear_left(line2);
     if (*line2 == '(') {
         if (strncmp(line2, "(alias)", 7) == 0) {
             is_alias = true;
             line2 += 7;
-        } else {
+        } else if (strncmp(line2, "(env)", 5) == 0) {
+            is_env = true;
+            line2 += 5;
+        }else {
             LOG_WARN("Unknown Modifier: %s", line);
-            return false;
+            ret = false;
+            goto cleanup;
         }
 
         line2 = clear_left(line2);
@@ -124,7 +137,8 @@ bool parse_rc_line(const char *line) {
         line2 = clear_left(line2);
         if (*line2 != '=') {
             LOG_WARN("Invalid character, expected `=`, got `%c`, saved: %c", *line2, saved);
-            return false;
+            ret = false;
+            goto cleanup;
         }
         line2++;
     }
@@ -160,7 +174,9 @@ bool parse_rc_line(const char *line) {
     LOG_DEBUG("Key: %s, Value %s", key, value);
 
     if (is_alias) {
-        return set_alias(key, value);
+        ret = set_alias(key, value);
+    } else if (is_env) {
+        ret = set_env(key, value);
     } else {
         bool handled = false;
         for (size_t i = 0; i < sizeof(options)/sizeof(options[0]); i++) {
@@ -171,11 +187,15 @@ bool parse_rc_line(const char *line) {
         }
         if (!handled) {
             LOG_WARN("Unknown option %s", key);
-            return false;
+            ret = false;
+            goto cleanup;
         }
     }
+    ret = true;
 
-    return true;
+cleanup:
+    free(line2_start);
+    return ret;
 }
 
 bool load__rc_file() {

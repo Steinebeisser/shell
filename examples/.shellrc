@@ -30,6 +30,11 @@ set prompt = "Shell > "
 : you can set aliases using set(alias), currently only expands once
 set(alias) ls = ls -l
 
+: you can set envs using set(env), default is
+: you can use them in the shell via ${env}
+: for exammple $rc gets first expanded into ~/.shellrc and then into /home/user/.shellrc
+set(env) rc = ~/.shellrc
+
 
 : if u want to see to what the command expands
 : for example u call git which then expands to /usr/bin/git
@@ -45,3 +50,6 @@ set timeout = -1
 
 : if u want to automatically see the exit code of programs
 set show_exit_code = 1
+
+: if you can override envs, default should be to unset old env instead of overriding
+set allow_env_override = 0

@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language: Stein Shell Rc
 " Maintainer: Paul Geisthardt
-" Latest Revision: 2025-09-30
+" Latest Revision: 2025-10-02
 
 if exists("b:current_syntax")
   finish
@@ -15,6 +15,8 @@ syntax keyword stein_shellrcset set
       \           ,stein_shellrctimekey
       \           ,stein_shellrcshowcmdpathkey
       \           ,stein_shellrcshowexpandedkey
+      \           ,stein_shellrcshowexitkey
+      \           ,stein_shellrcshowenvoverridekey
       \ skipwhite
 highlight link stein_shellrcset keyword
 
@@ -34,6 +36,18 @@ highlight link stein_shellrcaliasequals operator
 
 syntax match stein_shellrcaliasvalue /.*$/ contained contains=stein_shellrcstring
 highlight link stein_shellrcaliasvalue special
+
+
+syntax match stein_shellrcmodifier /(env)/ contained nextgroup=stein_shellrcenvname skipwhite
+
+syntax match stein_shellrcenvname /\w\+/ contained nextgroup=stein_shellrcenvquals skipwhite
+highlight link stein_shellrcenvname define
+
+syntax match stein_shellrcenvquals /=/ contained nextgroup=stein_shellrcenvvalue skipwhite
+highlight link stein_shellrcenvquals operator
+
+syntax match stein_shellrcenvvalue /.*$/ contained
+highlight link stein_shellrcenvvalue special
 
 " ----- color keys chain -----
 syntax match stein_shellrccolorkey /\v<(
@@ -112,6 +126,26 @@ highlight link stein_shellrcshowexpandedequals Operator
 
 syntax match stein_shellrcshowexpandedvalue /\v(1|0|true|false)/ contained
 highlight link stein_shellrcshowexpandedvalue Constant
+
+" ----- exit_code key chain -----
+syntax match stein_shellrcshowexitkey /\<show_exit_code\>/ contained nextgroup=stein_shellrcshowexitequals skipwhite
+highlight link stein_shellrcshowexitkey Type
+
+syntax match stein_shellrcshowexitequals /=/ contained nextgroup=stein_shellrcshowexitvalue skipwhite
+highlight link stein_shellrcshowexitequals Operator
+
+syntax match stein_shellrcshowexitvalue /\v(1|0|true|false)/ contained
+highlight link stein_shellrcshowexitvalue Constant
+
+" ----- allow_env_override key chain -----
+syntax match stein_shellrcshowenvoverridekey /\<allow_env_override\>/ contained nextgroup=stein_shellrcshowenvoverrideequals skipwhite
+highlight link stein_shellrcshowenvoverridekey Type
+
+syntax match stein_shellrcshowenvoverrideequals /=/ contained nextgroup=stein_shellrcshowenvoverridevalue skipwhite
+highlight link stein_shellrcshowenvoverrideequals Operator
+
+syntax match stein_shellrcshowenvoverridevalue /\v(1|0|true|false)/ contained
+highlight link stein_shellrcshowenvoverridevalue Constant
 
 " ----- comments -----
 syntax match stein_shellrccomment /:.*$/ containedin=ALL

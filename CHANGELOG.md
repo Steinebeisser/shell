@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.0] - 2025-10-03
+- Envs + correct args
+    - added envs (set(env))
+    - fixed argument parsing, now strings are 1
+    - added allow\_env\_override
+
+---
+
 ## [0.3.0] - 2025-09-30
 - More RC option
     - added show exit code
