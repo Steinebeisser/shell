@@ -33,12 +33,36 @@ bool set_info_color(const char *value) {
     return set_color("info", value);
 }
 
+bool unset_info_color() {
+    return unset_color("info");
+}
+
 bool set_warn_color(const char *value) {
     return set_color("warn", value);
 }
 
+bool unset_warn_color() {
+    return unset_color("warn");
+}
+
 bool set_error_color(const char *value) {
     return set_color("error", value);
+}
+
+bool unset_error_color() {
+    return unset_color("error");
+}
+
+const char *get_info_color() {
+    return get_color("info");
+}
+
+const char *get_warn_color() {
+    return get_color("warn");
+}
+
+const char *get_error_color() {
+    return get_color("error");
 }
 
 bool set_prompt(const char *value) {
@@ -47,8 +71,21 @@ bool set_prompt(const char *value) {
     return true;
 }
 
+bool unset_prompt() {
+    shell_config.prompt[0] = '\0';
+    return true;
+}
+
+const char *get_prompt() {
+    return shell_config.prompt;
+}
+
 bool set_alias(const char *key, const char *value) {
     return set__alias(key, value);
+}
+
+bool unset_alias(const char *key) {
+    return unset__alias(key);
 }
 
 const char *get_alias(const char *key) {
@@ -56,6 +93,7 @@ const char *get_alias(const char *key) {
 }
 
 bool set_timeout(const char *value) {
+    // TODO
     (void)value;
     return true;
 }
@@ -65,14 +103,55 @@ bool set_show_cmd_path(const char *value) {
     return true;
 }
 
+bool unset_show_cmd_path() {
+    shell_config.show_full_cmd_path = false;
+    return true;
+}
+
+const char *get_show_cmd_path() {
+    return shell_config.show_full_cmd_path ? "true" : "false";
+}
+
 bool set_show_expanded_alias(const char *value) {
     shell_config.show_full_alias_cmd = parse_bool(value, shell_config.show_full_alias_cmd);
     return true;
 }
 
+bool unset_show_expanded_alias() {
+    shell_config.show_full_alias_cmd = false;
+    return true;
+}
+
+const char *get_show_expanded_alias() {
+    return shell_config.show_full_alias_cmd ? "true" : "false";
+}
+
 bool set_show_exit_code(const char *value) {
     shell_config.show_exit_code = parse_bool(value, shell_config.show_exit_code);
     return true;
+}
+
+bool unset_show_exit_code() {
+    shell_config.show_exit_code = false;
+    return true;
+}
+
+const char *get_show_exit_code() {
+    return shell_config.show_exit_code ? "true" : "false";
+}
+
+bool set_allow_env_override(const char *value) {
+    shell_config.allow_env_override = parse_bool(value, shell_config.allow_env_override);
+    return true;
+}
+
+bool unset_allow_env_override() {
+    shell_config.allow_env_override = false;
+    return true;
+}
+
+const char *get_allow_env_override() {
+    return shell_config.allow_env_override ? "true" : "false";
 }
 
 bool set_env(const char *key, const char *value) {
@@ -85,11 +164,6 @@ bool unset_env(const char *key) {
 
 const char *get_env(const char *key) {
     return get__env(key);
-}
-
-bool set_allow_env_override(const char *value) {
-    shell_config.allow_env_override = parse_bool(value, shell_config.allow_env_override);
-    return true;
 }
 
 bool init_shell_config() {

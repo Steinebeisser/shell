@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 bool set__alias(const char *key, const char *value);
+bool unset__alias(const char *key);
 const char *get__alias(const char *key);
 bool tokenize_alias_value(const char *value, char ***out_argv, int *out_argc);
 

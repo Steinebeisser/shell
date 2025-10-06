@@ -99,3 +99,20 @@ bool set__alias(const char *key, const char *value) {
 
     return true;
 }
+
+// we wanna unset, dont care iif it exists or not
+bool unset__alias(const char *key) {
+    LOG_DEBUG("Unsetting alias %s", key);
+    if (!key) return true;
+
+    for (size_t i = 0; i < shell_config.alias_count; ++i) {
+        if (strcmp(shell_config.aliases[i].key, key) == 0) {
+            shell_config.aliases[i].value[0] = '\0';
+            shell_config.aliases[i].key[0] = '\0';
+            shell_config.alias_count -= 1;
+            return true;
+        }
+    }
+
+    return true;
+}

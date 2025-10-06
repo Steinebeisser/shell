@@ -42,19 +42,48 @@ typedef struct {
 extern ShellConfig shell_config;
 
 bool set_info_color(const char *value);
+bool unset_info_color();
+const char *get_info_color();
+
 bool set_warn_color(const char *value);
+bool unset_warn_color();
+const char *get_warn_color(); // TODO: color struct with rgb/int/char depending what exists
+
 bool set_error_color(const char *value);
+bool unset_error_color();
+const char *get_error_color();
+
 bool set_prompt(const char *value);
+bool unset_prompt();
+const char *get_prompt();
+
 bool set_alias(const char *key, const char *value);
-bool set_timeout(const char *value);
-bool set_show_cmd_path(const char *value);
-bool set_show_expanded_alias(const char *value);
+bool unset_alias(const char *key);
 const char *get_alias(const char *key);
+
+bool set_timeout(const char *value);
+bool unset_timeout();
+const char *get_timeout();
+
+bool set_show_cmd_path(const char *value);
+bool unset_show_cmd_path();
+const char *get_show_cmd_path();
+
+bool set_show_expanded_alias(const char *value);
+bool unset_show_expanded_alias();
+const char *get_show_expanded_alias();
+
 bool set_show_exit_code(const char *value);
+bool unset_show_exit_code();
+const char *get_show_exit_code();
+
+bool set_allow_env_override(const char *value);
+bool unset_allow_env_override();
+const char *get_allow_env_override();
+
 bool set_env(const char *key, const char *value);
 bool unset_env(const char *key);
 const char *get_env(const char *key);
-bool set_allow_env_override(const char *value);
 
 bool load_rc_file();
 

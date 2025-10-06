@@ -71,7 +71,7 @@ bool execute_command(int argc, char **argv) {
 
     if (!expand_stuff(execute_argc, execute_argv)) return false;
 
-    bool result = execute_builtin(execute_argc, execute_argv);
+    bool result = execute_builtin(execute_argc, (const char **)execute_argv);
     if (!result) {
         result = execute_external(execute_argc, execute_argv);
     }

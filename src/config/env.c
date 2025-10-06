@@ -70,17 +70,23 @@ bool set__env(const char *key, const char *value) {
     shell_config.env_count += 1;
     return true;
 }
+
+// we dont care f it exists, just say it did
 bool unset__env(const char *key) {
-    if (!key) return false;
+    LOG_DEBUG("Unsetting env: %s", key);
+    if (!key) return true;
 
     int idx = get_env_idx(key);
+    LOG_DEBUG("Unsetting env: %s with index: %d", key, idx);
 
-    if (idx < 0) return false;
+    if (idx < 0) return true;
 
     shell_config.envs[idx].value[0] = '\0';
     shell_config.envs[idx].key[0] = '\0';
 
     shell_config.env_count -= 1;
+
+    unsetenv(key);
 
     return true;
 }
@@ -125,7 +131,7 @@ bool expand_envs(int argc, char **argv) {
                 if (key_len > MAX_ENV_KEY_LEN) {
                     free(dst_start);
                     LOG_ERROR("Env Key is too long, Max size: %d, got %llu", MAX_ENV_KEY_LEN, key_len);
-                    shell_print(SHELL_ERROR, "Env Key is too long, Max size: %d, got %llu", MAX_ENV_KEY_LEN, key_len);
+                    shell_print(SHELL_ERROR, "Env Key is too long, Max size: %d, got %llu\n", MAX_ENV_KEY_LEN, key_len);
                     return false;
                 }
                 char key[MAX_ENV_KEY_LEN];
@@ -135,7 +141,7 @@ bool expand_envs(int argc, char **argv) {
                 const char *value = get__env(key);
                 if (!value) {
                     LOG_ERROR("Failed to resolve env key, pls escape normal Dollar Signs, Key: %s", key);
-                    shell_print(SHELL_ERROR, "Failed to resolve env key, pls escape normal Dollar Signs, Key: %s", key);
+                    shell_print(SHELL_ERROR, "Failed to resolve env key, pls escape normal Dollar Signs, Key: %s\n", key);
                     return false;
                 }
 

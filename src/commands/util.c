@@ -19,7 +19,7 @@ bool expand_stuff(int argc, char **argv) {
 #endif
     if (!home) {
         LOG_WARN("expand_stuff: failed to resolve ~");
-        shell_print(SHELL_WARN, "expand_stuff: failed to resolve ~");
+        shell_print(SHELL_WARN, "expand_stuff: failed to resolve ~\n");
         return false;
     }
     size_t home_len = strlen(home);

@@ -45,8 +45,7 @@ int main(int argc, char **argv) {
     cmd_append(&cmd, "-g");
     // cmd_append(&cmd, "-fsanitize=address");
     // cmd_append(&cmd, "-fno-omit-frame-pointer");
-    // cmd_append(&cmd, "-static-libasan");
- 
+
     cmd_append(&cmd, "-o");
     cmd_append(&cmd, BUILD_DIR"shell");
 

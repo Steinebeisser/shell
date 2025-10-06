@@ -19,7 +19,7 @@ void shell_print(Shell_Print_Level level, const char *fmt, ...) {
     }
 
     if (!level_color_string) {
-        LOG_ERROR("shell_print: Unknown/Unimplemented Shell Level %d", level);
+        LOG_ERROR("shell_print: Unknown/Unimplemented Shell Level %d\n", level);
         return;
     }
 

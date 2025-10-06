@@ -23,6 +23,25 @@ bool tokenize_command(const char *line, int *out_argc, char ***out_argv) {
         }
         LOG_DEBUG("Argc: %d, first char: %c", argc, *line);
 
+        if (*line == '=') {
+            argv[argc++] = strdup("=");
+            line++;
+            continue;
+        }
+
+        if (*line == '(') {
+            const char *arg_start = line++;
+            while (*line && *line != ')') line++;
+            if (*line == ')') line++;
+
+            size_t arg_len = line - arg_start;
+            char *arg = strndup(arg_start, arg_len);
+            if (!arg) goto cleanup;
+
+            argv[argc++] = arg;
+            continue;
+        }
+
         char quote = 0;
         if (*line == '"' || *line == '\'') {
             quote = *line;
@@ -31,14 +50,10 @@ bool tokenize_command(const char *line, int *out_argc, char ***out_argv) {
         const char *arg_start = line++;
         size_t arg_len = 1;
 
-        while (*line && ((quote && *line != quote) || (!quote && !isspace(*line)))) {
+        do {
             line += 1;
             arg_len += 1;
-        }
-        if (quote && *line == quote) {
-            line += 1;
-            arg_len += 1;
-        }
+        } while(*line && ((quote && *line != quote) || (!quote && !isspace(*line) && *line != '=' && *line != '(')));
 
         LOG_DEBUG("Allocation %d Bytes for arg %d in %s", arg_len, argc, line_start);
         char *arg = strndup(arg_start, arg_len);
@@ -95,7 +110,7 @@ void repl_loop()  {
 
         if (!tokenize_command(line, &argc, &argv)) {
             LOG_ERROR("Failed to parse command: %s", line);
-            shell_print(SHELL_ERROR, "Failed to parse command");
+            shell_print(SHELL_ERROR, "Failed to parse command\n");
             goto cleanup;
         }
 

@@ -4,6 +4,7 @@
 #include "third_party/pgs_log.h"
 
 #include "config.h"
+#include "core/shell_print.h"
 
 typedef struct {
     const char *name;
@@ -43,6 +44,7 @@ int parse_color(const char *name) {
     }
 
     LOG_WARN("Unknown color name: %s", name);
+    shell_print(SHELL_WARN, "Unknown color name: %s\n", name);
     return -1;
 }
 
@@ -59,9 +61,53 @@ bool set_color(const char *color_type, const char *value) {
         shell_config.error_color = color_value;
     } else {
         LOG_WARN("Unknown color type passed: %s", color_type);
+        shell_print(SHELL_WARN, "Unknown color type passed: %s\n", color_type);
         return false;
     }
 
     return true;
-
 }
+
+bool unset_color(const char *color_type) {
+    int white = 97;
+
+    if (strcmp(color_type, "info") == 0) {
+        shell_config.info_color = white;
+    } else if (strcmp(color_type, "warn") == 0) {
+        shell_config.warn_color = white;
+    } else if (strcmp(color_type, "error") == 0) {
+        shell_config.error_color = white;
+    } else {
+        LOG_WARN("Unknown color type passed: %s", color_type);
+        return false;
+    }
+
+    return true;
+}
+
+
+const char *get_color(const char *color_type) {
+    int code;
+
+    if (strcmp(color_type, "info") == 0) {
+        code = shell_config.info_color;
+    } else if (strcmp(color_type, "warn") == 0) {
+        code = shell_config.warn_color;
+    } else if (strcmp(color_type, "error") == 0) {
+        code = shell_config.error_color;
+    } else {
+        LOG_WARN("Unknown color type passed: %s", color_type);
+        return NULL;
+    }
+
+    for (size_t i = 0; i < sizeof(color_table)/sizeof(color_table[0]); i++) {
+        if (color_table[i].code == code) {
+            return strdup(color_table[i].name);
+        }
+    }
+
+    char buf[16];
+    snprintf(buf, sizeof(buf), "%d", code);
+    return strdup(buf);
+}
+

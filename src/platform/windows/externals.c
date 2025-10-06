@@ -52,9 +52,8 @@ wchar_t *resolve_command_path(const char *command, const char *path, const char 
     char *exts[32];
     while (exttoken) {
         exts[ext_count++] = exttoken;
-        // shell_print(SHELL_WARN, "%s:%llu\n", exttoken, ext_count);
         if (ext_count >= 32) {
-            // shell_print(SHELL_ERROR, "Pathext is too long, MAX: %d, GOT: %llu", 32, ext_count);
+            shell_print(SHELL_ERROR, "Pathext is too long, MAX: %d, GOT: %llu\n", 32, ext_count);
             return NULL;
         }
         exttoken = strtok(NULL, ";");
@@ -66,13 +65,10 @@ wchar_t *resolve_command_path(const char *command, const char *path, const char 
     char *token = strtok(dup_path, ";");
     size_t buf_len = 1024;
     while (token != NULL) {
-        // shell_print(SHELL_WARN, "%s\n", token);
         for (size_t i = 0; i < ext_count; ++i) {
 
             wchar_t wbuf[buf_len];
             swprintf(wbuf, buf_len, L"%hs\\%hs%hs", token, command, exts[i]);
-
-            // shell_print(SHELL_ERROR, "%ls\n", wbuf);
 
             if (_waccess(wbuf, F_OK) == 0) {
                 return _wcsdup(wbuf);
@@ -124,9 +120,8 @@ bool execute_external(int argc, char **argv) {
     char *command = argv[0];
     char *path = getenv( "Path" );
     char *pathext = getenv( "PATHEXT" );
-    // shell_print(SHELL_INFO, "%s\n", pathext);
     if (!path || !pathext) {
-        shell_print(SHELL_ERROR, "Missing Path or PATHEXT");
+        shell_print(SHELL_ERROR, "Missing Path or PATHEXT\n");
         LOG_ERROR("Missing Path or PATHEXT");
         return false;
     }
@@ -193,15 +188,15 @@ bool execute_external(int argc, char **argv) {
                     LOG_ERROR("Failed to Create Process, %d: %s", err, mb_buffer);
                     free(mb_buffer);
                 } else {
-                    shell_print(SHELL_ERROR, "Failed to Create Process, %d (error string conversion failed)", err);
+                    shell_print(SHELL_ERROR, "Failed to Create Process, %d (error string conversion failed)\n", err);
                     LOG_ERROR("Failed to Create Process, %d (error string conversion failed)", err);
                 }
             } else {
-                shell_print(SHELL_ERROR, "Failed to Create Process, %d (error string conversion failed)", err);
+                shell_print(SHELL_ERROR, "Failed to Create Process, %d (error string conversion failed)\n", err);
                 LOG_ERROR("Failed to Create Process, %d (error string conversion failed)", err);
             }
         } else {
-            shell_print(SHELL_ERROR, "Failed to Create Process, %d (failed to get error string)", err);
+            shell_print(SHELL_ERROR, "Failed to Create Process, %d (failed to get error string)\n", err);
             LOG_ERROR("Failed to Create Process, %d (failed to get error string)", err);
         }
 
