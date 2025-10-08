@@ -329,11 +329,12 @@ bool load__rc_file() {
         return false;
     }
 
-    LOG_DEBUG("%s", path);
+    LOG_DEBUG("Using %s as rc path", path);
     if (path[0] == '\0') return false;
 
     FILE *rc_file = fopen(path, "r");
     if (!rc_file) {
+        LOG_DEBUG("Rc File doesnt exist or cant be opened");
         return true; // doesnt exist so we still return true
     }
 
@@ -345,6 +346,7 @@ bool load__rc_file() {
         // TODO: parse
         parse_rc_line(line);
     }
+    LOG_DEBUG("Finished reading rc file");
 
     free(line);
     fclose(rc_file);
@@ -502,8 +504,35 @@ bool edit_rc_file(const char *line, bool add, bool is_force, bool comment_old) {
 
     fclose(tmp_file);
 
+#if defined(__WIN32)
+    printf("HELLO\n");
+    size_t tmp_path_len = strlen(tmp_path);
+    char tmp2_windows_file[PATH_MAX] = {0};
+    memcpy(tmp2_windows_file, tmp_path, tmp_path_len);
+    tmp2_windows_file[tmp_path_len] = '\0';
+    tmp2_windows_file[tmp_path_len - 1] = 'd';
+    tmp2_windows_file[tmp_path_len - 2] = 'l';
+    tmp2_windows_file[tmp_path_len - 3] = 'o';
+    if (_access(tmp2_windows_file, 0) == 0) {
+        if (remove(tmp2_windows_file) != 0) {
+            LOG_ERROR("Failed to delete old file, hate microsoft, not me");
+            goto cleanup;
+        }
+    }
+    if (rename(path, tmp2_windows_file) != 0) {
+        LOG_ERROR("Failed to rename original to temp file %s to %s", path, tmp2_windows_file);
+        goto cleanup;
+    }
+#endif
+
     if (rename(tmp_path, path) != 0) {
         LOG_ERROR("Failed to rename temp file to %s", path);
+#if defined(__WIN32)
+    if (rename(tmp2_windows_file, path) != 0) {
+        LOG_ERROR("Failed to rename new file to original name, but also failed to restore old file, rename %s manally to %s", tmp2_windows_file, path);
+        goto cleanup;
+    }
+#endif
         remove(tmp_path);
         goto cleanup;
     }

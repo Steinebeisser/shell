@@ -117,7 +117,6 @@ char *wchar_to_char(const wchar_t *wstr) {
 bool execute_external(int argc, char **argv) {
     // TODO: move down after finding full path since windows emo and doesnt do it itself, atleast didnt find aynthing
 
-    char *command = argv[0];
     char *path = getenv( "Path" );
     char *pathext = getenv( "PATHEXT" );
     if (!path || !pathext) {

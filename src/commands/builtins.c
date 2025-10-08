@@ -8,6 +8,7 @@
 #include "config/config.h"
 #include "config/env.h"
 #include "config/rc_parser.h"
+#include "platform/strndup.h"
 
 char *merge_args(int start_at, int argc, const char **argv) {
     size_t needed = 1;

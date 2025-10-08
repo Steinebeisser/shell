@@ -2,6 +2,7 @@
 
 #define PGS_LOG_STRIP_PREFIX
 #include "third_party/pgs_log.h"
+#include "third_party/nob.h"
 
 #include <limits.h>
 #include "rc_parser.h"
@@ -10,6 +11,7 @@
 #include "util.h"
 #include "env.h"
 #include "core/shell_print.h"
+#include "platform/env.h"
 
 ShellConfig shell_config = {
     .info_color = 97,
@@ -24,8 +26,17 @@ ShellConfig shell_config = {
     .show_exit_code = false,
     .envs = {
         { .key = "rc", .value = "~/.shellrc" },
+        { .key = "ic", .value = "info_color" },
+        { .key = "wc", .value = "warn_color" },
+        { .key = "ec", .value = "error_color" },
+        { .key = "p", .value = "prompt" },
+        { .key = "scp", .value = "show_cmd_path" },
+        { .key = "sea", .value = "show_expanded_alias" },
+        { .key = "t", .value = "timeout" },
+        { .key = "se", .value = "show_exit_code" },
+        { .key = "aeo", .value = "allow_env_override" },
     },
-    .env_count = 1,
+    .env_count = 0, // gets set at runtime in init shell config
     .allow_env_override = false,
 };
 
@@ -167,6 +178,14 @@ const char *get_env(const char *key) {
 }
 
 bool init_shell_config() {
+    size_t i;
+    for (i = 0; i < MAX_ENVS; i++) {
+        if (shell_config.envs[i].key[0] == '\0') {
+            break;
+        }
+    }
+    shell_config.env_count = i;
+    LOG_DEBUG("Found %d default envs", shell_config.env_count);
     for (size_t i = 0; i < shell_config.env_count; i++) {
         if (setenv(shell_config.envs[i].key, shell_config.envs[i].value, 1) != 0) {
             shell_print(SHELL_ERROR, "Failed to set envs for shell config init\n");

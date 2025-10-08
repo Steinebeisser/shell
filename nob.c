@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
     if (!mkdir_if_not_exists(BUILD_DIR)) return 1;
 
     const char *defines[] = {
-        // "DEBUG",
+        "DEBUG",
     };
 
     const char *includes[] = {

@@ -5,6 +5,7 @@
 
 #include "config.h"
 #include "core/shell_print.h"
+#include "platform/env.h"
 
 int get_env_idx(const char *key) {
     for (size_t i = 0; i < shell_config.env_count; ++i) {

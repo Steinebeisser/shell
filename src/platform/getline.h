@@ -36,7 +36,8 @@
             if ((char)c == '\n') break;
         }
 
-        if (pos <= 1) return -1;
+        if (pos == 0 && c == EOF) return -1;
+
         (*lineptr)[pos] = '\0';
         if ((*lineptr)[pos] == EOF) return -1;
 

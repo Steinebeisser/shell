@@ -6,6 +6,7 @@
 #include "shell_print.h"
 #include "config/config.h"
 #include "platform/getline.h"
+#include "platform/strndup.h"
 
 #define MAX_ARG_COUNT 64
 
