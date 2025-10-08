@@ -11,7 +11,7 @@
 : if u are using vim or nvim i sugges copying the syntax file into ur syntax directory and st an autocmd that turns .shellrc into filetype `stein_shellrc`
 : this will give u highlighting
 
-: sets color of sgell messsages, currently theres 3 types
+: sets color of shell messsages, currently theres 3 types
 :   info
 :   warn
 :   error
