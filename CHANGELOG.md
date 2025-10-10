@@ -1,11 +1,25 @@
 # Changelog
 
+## [0.6.0] -
+- Raw Mode/Interactive Input
+    - change to raw mode
+    - enable ansi escape sequence chars like arrows
+    - history with rc options
+    - finally make timeout parseable
+
+---
+
 ## [0.4.1] - 2025-10-08
 - windows imp for 0.3/0.4
     - implement set/unsetenv for windows
     - modify file persistance because windows rename fails if file exists
     - implement windows strndup
     - fixed windows getline implementation to work for empty lines
+
+---
+
+## [0.5.0] - 2025-10-06
+- Set/Unset/Get Builtins
 
 ---
 

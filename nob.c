@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
     if (!mkdir_if_not_exists(BUILD_DIR)) return 1;
 
     const char *defines[] = {
-        "DEBUG",
+        // "DEBUG",
     };
 
     const char *includes[] = {
@@ -23,6 +23,9 @@ int main(int argc, char **argv) {
         "src/core/shell.c",
         "src/core/repl.c",
         "src/core/shell_print.c",
+        "src/core/shell_input.c",
+        "src/core/input_modes/normal_mode.c",
+        "src/core/history.c",
 
         "src/commands/builtins.c",
         "src/commands/commands.c",
@@ -36,6 +39,8 @@ int main(int argc, char **argv) {
 
         "src/platform/unix/externals.c",
         "src/platform/windows/externals.c",
+        "src/platform/unix/terminal.c",
+        "src/platform/windows/terminal.c",
     };
 
     Nob_Cmd cmd = {0};
@@ -43,8 +48,8 @@ int main(int argc, char **argv) {
     cmd_append(&cmd, "-Wall");
     cmd_append(&cmd, "-Wextra");
     cmd_append(&cmd, "-g");
-    // cmd_append(&cmd, "-fsanitize=address");
-    // cmd_append(&cmd, "-fno-omit-frame-pointer");
+    cmd_append(&cmd, "-fsanitize=address");
+    cmd_append(&cmd, "-fno-omit-frame-pointer");
 
     cmd_append(&cmd, "-o");
     cmd_append(&cmd, BUILD_DIR"shell");

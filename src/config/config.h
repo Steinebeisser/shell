@@ -1,6 +1,8 @@
 #ifndef STEIN_SHELL_CONFIG_H
 #define STEIN_SHELL_CONFIG_H
 
+#include "core/shell_input.h"
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -37,6 +39,11 @@ typedef struct {
     Env envs[MAX_ENVS];
     size_t env_count;
     bool allow_env_override;
+    TerminalMode terminal_mode;
+    bool enable_history_file;
+    bool enable_history;
+    size_t max_history_len;
+    char *history_file;
 } ShellConfig;
 
 extern ShellConfig shell_config;
@@ -84,6 +91,26 @@ const char *get_allow_env_override();
 bool set_env(const char *key, const char *value);
 bool unset_env(const char *key);
 const char *get_env(const char *key);
+
+bool set_terminal_mode(const char *value);
+bool unset_terminal_mode();
+const char *get_terminal_mode();
+
+bool set_enable_history_file(const char *value);
+bool unset_enable_history_file();
+const char *get_enable_history_file();
+
+bool set_enable_history(const char *value);
+bool unset_enable_history();
+const char *get_enable_history();
+
+bool set_max_history_len(const char *value);
+bool unset_max_history_len();
+const char *get_max_history_len();
+
+bool set_history_file(const char *value);
+bool unset_history_file();
+const char *get_history_file();
 
 bool load_rc_file();
 

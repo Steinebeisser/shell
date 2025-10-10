@@ -33,6 +33,12 @@ Options options[] = {
     {"show_expanded_alias",  set_show_expanded_alias,  unset_show_expanded_alias,  get_show_expanded_alias},
     {"show_exit_code",       set_show_exit_code,       unset_show_exit_code,       get_show_exit_code},
     {"allow_env_override",   set_allow_env_override,   unset_allow_env_override,   get_allow_env_override},
+    {"timeout",              set_timeout,              unset_timeout,              get_timeout},
+    {"terminal_mode",        set_terminal_mode,        unset_terminal_mode,        get_terminal_mode},
+    {"enable_history_file",  set_enable_history_file,  unset_enable_history_file,  get_enable_history_file},
+    {"enable_history",       set_enable_history,       unset_enable_history,       get_enable_history},
+    {"max_history_len",      set_max_history_len,      unset_max_history_len,      get_max_history_len},
+    {"history_file",         set_history_file,         unset_history_file,         get_history_file},
 };
 
 typedef struct {

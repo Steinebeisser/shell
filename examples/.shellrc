@@ -53,3 +53,20 @@ set show_exit_code = 1
 
 : if you can override envs, default should be to unset old env instead of overriding
 set allow_env_override = 0
+
+: used to set the terminal mode, default is normal
+: valid options are: normal, vi, emacs
+: currently only normal is implemented
+set terminal_mode = normal
+
+: if history should persist over sessions
+set enable_history_file = 1
+
+: if history should be enabled
+set enable_history = 1
+
+: the amount of history to be kept before overriding old one
+set max_history_len = 4096
+
+: path to history file
+set history_file = ~/.shellhistory

@@ -419,6 +419,7 @@ Pgs_Log_Error pgs_log(Pgs_Log_Level level, const char *file, size_t file_len, co
         }
     }
 
+    log_string[pos++] = '\r';
     log_string[pos++] = '\n';
     log_string[pos] = '\0';
 

@@ -7,6 +7,10 @@
 #include "config/config.h"
 #include "platform/getline.h"
 #include "platform/strndup.h"
+#include "core/shell_input.h"
+#include "core/history.h"
+
+#include <unistd.h>
 
 #define MAX_ARG_COUNT 64
 
@@ -19,9 +23,7 @@ bool tokenize_command(const char *line, int *out_argc, char ***out_argv) {
     bool ret = false;
     while (*line) {
         while (isspace(*line)) line++;
-        if (!*line) {
-            goto cleanup;
-        }
+        if (!*line) break;
         LOG_DEBUG("Argc: %d, first char: %c", argc, *line);
 
         if (*line == '=') {
@@ -86,29 +88,69 @@ cleanup:
     return ret;
 }
 
+
 void repl_loop()  {
-    char *line = NULL;
-    size_t len = 0;
+    char line[MAX_LINE_LEN] = {0};
+    int pos = 0;
+    int len = 0;
 
     while(1) {
         // fputs(shell_promt, stdout);
         shell_print(SHELL_INFO, shell_config.prompt);
 
-        ssize_t n = getline(&line, &len, stdin);
-        if (n == -1) {
-            LOG_DEBUG("repl_loop: getline failed");
-            putchar('\n');
-            break;
+        while (1) {
+            KeyEvent ev = get_key_event();
+            int res = handle_key_input(shell_config.terminal_mode, ev, line, &pos, &len);
+            if (res == 0) break;
+            if (res == -1) {
+                LOG_ERROR("Failed to handle key input, line: %s", line);
+                continue;
+            }
         }
 
-        if (n > 0 && line[n-1] == '\n') line[n-1] = '\0';
-        if (line[0] == '\0') continue;
+        // while (1) {
+        //     char c = 0;
+        //     ssize_t n = read(STDIN_FILENO, &c, 1);
+        //     if (n <= 0) continue;
+        //
+        //     if (c == '\n' || c == '\r') {
+        //         // line end
+        //         shell_print(SHELL_INFO, "Entered Line\n");
+        //         break;
+        //     } else if (c == BACKSPACE) {
+        //         // handle 
+        //         shell_print(SHELL_INFO, "Backspace\n");
+        //     } else if (c == CTRL_C) {
+        //         shell_print(SHELL_INFO, "Killing running porcess if exists\n");
+        //         shell_print(SHELL_INFO, "^C\n");
+        //     } else if (c == ESCAPE) {
+        //         ssize_t n = read(STDIN_FILENO, &c, 1);
+        //         if (n <= 0) continue;
+        //
+        //         if (c == OPEN_BRACKET) {
+        //             ssize_t n = read(STDIN_FILENO, &c, 1);
+        //             if (n <= 0) continue;
+        //
+        //             if (c == 'A') {
+        //                 shell_print(SHELL_INFO, "Up Arrow\n");
+        //             }
+        //         }
+        //     } else {
+        //         shell_print(SHELL_WARN, "Entered %d\n", c);
+        //         line[pos++] = c;
+        //     }
+        //
+        //     continue;
+        // }
 
+        if (pos <= 0) goto line_reset;
 
 
         char **argv = NULL;
         int argc = 0;
 
+        add_history(line);
+        //
         if (!tokenize_command(line, &argc, &argv)) {
             LOG_ERROR("Failed to parse command: %s", line);
             shell_print(SHELL_ERROR, "Failed to parse command\n");
@@ -138,9 +180,15 @@ void repl_loop()  {
 cleanup:
         if (argc <= 0) continue;
 
-        for (int i = 0; i < argc; ++i) free(argv[i]);
-        free(argv);
+        if (argv) {
+            for (int i = 0; i < argc; ++i) if (argv[i]) free(argv[i]);
+            if (argv) free(argv);
+        }
+line_reset:
+        line[0] = '\0';
+        pos = 0;
+        len = 0;
     }
 
-    free(line);
+    // free(line);
 }

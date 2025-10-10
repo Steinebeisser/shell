@@ -7,6 +7,7 @@
 
 #include "config/config.h"
 #include "core/shell_print.h"
+#include "platform/terminal.h"
 
 #include <unistd.h>
 #include <sys/wait.h>
@@ -45,11 +46,14 @@ bool execute_external(int argc, char **argv) {
     char *resolved_path = NULL;
     if (!executable_exists(argv[0], &resolved_path)) return false;
 
+    bool ret = false;
+
+    disable_raw_mode();
     pid_t pid = fork();
     if (pid < 0) {
         LOG_ERROR("Fork Failed");
-        free(resolved_path);
-        return false;
+        ret = false;
+        goto cleanup;
     }
 
     if (pid == 0) {
@@ -66,12 +70,13 @@ bool execute_external(int argc, char **argv) {
         if (shell_config.show_exit_code) {
             shell_print(SHELL_INFO, "%s exited with Exit Code: %d\n", argv[0], WEXITSTATUS(status));
         }
-        free(resolved_path);
-        return true; //WIFEXITED(status) && WEXITSTATUS(status) == 0;
+        ret = true;
     }
 
-    free(resolved_path);
-    return false;
+cleanup:
+    enable_raw_mode();
+    if (resolved_path) free(resolved_path);
+    return ret;
 }
 
 #endif
