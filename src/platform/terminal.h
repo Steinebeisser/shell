@@ -11,4 +11,9 @@ void disable_raw_mode();
 void disable_ansi();
 void disable_utf8();
 
+#ifdef __WIN32
+#include <windows.h>
+HANDLE get_input_handle();
+#endif
+
 #endif // STEIN_SHELL_PLATFORM_TERMINAL_H

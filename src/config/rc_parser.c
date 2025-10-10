@@ -511,7 +511,6 @@ bool edit_rc_file(const char *line, bool add, bool is_force, bool comment_old) {
     fclose(tmp_file);
 
 #if defined(__WIN32)
-    printf("HELLO\n");
     size_t tmp_path_len = strlen(tmp_path);
     char tmp2_windows_file[PATH_MAX] = {0};
     memcpy(tmp2_windows_file, tmp_path, tmp_path_len);

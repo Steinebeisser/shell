@@ -2,6 +2,7 @@
 #define STEIN_SHELL_HISTORY_H
 
 #include <stddef.h>
+#include <stdbool.h>
 
 typedef struct {
     char **lines;

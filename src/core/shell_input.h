@@ -36,6 +36,6 @@ typedef struct {
 int handle_key_input(TerminalMode mode, KeyEvent ev, char *line, int *pos, int *len);
 const char* mode_name(TerminalMode mode);
 TerminalMode get_mode(const char *name);
-KeyEvent get_key_event();
+const char *type_name(KeyType type);
 
 #endif // STEIN_SHELL_TERMINAL_INPUT_H

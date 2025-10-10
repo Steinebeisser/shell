@@ -9,6 +9,7 @@
 #include "platform/strndup.h"
 #include "core/shell_input.h"
 #include "core/history.h"
+#include "platform/input.h"
 
 #include <unistd.h>
 
@@ -100,6 +101,7 @@ void repl_loop()  {
 
         while (1) {
             KeyEvent ev = get_key_event();
+            LOG_DEBUG("Event: %s", type_name(ev.type));
             int res = handle_key_input(shell_config.terminal_mode, ev, line, &pos, &len);
             if (res == 0) break;
             if (res == -1) {

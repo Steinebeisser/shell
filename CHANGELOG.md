@@ -1,6 +1,9 @@
 # Changelog
 
-## [0.6.0] -
+## [0.6.1] - 2025-10-10
+- Windows Imp for 0.6
+
+## [0.6.0] - 2025-10-10
 - Raw Mode/Interactive Input
     - change to raw mode
     - enable ansi escape sequence chars like arrows

@@ -7,6 +7,7 @@
 
 #include "config/config.h"
 #include "core/shell_print.h"
+#include "platform/terminal.h"
 
 #include <windows.h>
 #include <io.h>
@@ -141,6 +142,9 @@ bool execute_external(int argc, char **argv) {
     PROCESS_INFORMATION piProcInfo;
     ZeroMemory(&piProcInfo, sizeof(PROCESS_INFORMATION));
 
+    disable_raw_mode();
+    disable_ansi();
+
     BOOL ok = CreateProcessW(
             NULL,           //   [in, optional]      LPCWSTR               lpApplicationName,
             quoted_cmd,     //   [in, out, optional] LPWSTR                lpCommandLine,
@@ -162,13 +166,13 @@ bool execute_external(int argc, char **argv) {
 
 
         DWORD size = FormatMessageW(
-          FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,//[in]           DWORD   dwFlags,
-          NULL,     //[in, optional] LPCVOID lpSource,
-          err,      //[in]           DWORD   dwMessageId,
-          0,        //[in]           DWORD   dwLanguageId,
+          FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,    //[in]           DWORD   dwFlags,
+          NULL,             //[in, optional] LPCVOID lpSource,
+          err,              //[in]           DWORD   dwMessageId,
+          0,                //[in]           DWORD   dwLanguageId,
           (LPWSTR)&buffer,  //[out]          LPWSTR  lpBuffer,
-          0,        //[in]           DWORD   nSize,
-          NULL      //[in, optional] va_list *Arguments
+          0,                //[in]           DWORD   nSize,
+          NULL              //[in, optional] va_list *Arguments
         );
 
         if (size > 0) {
@@ -203,6 +207,9 @@ bool execute_external(int argc, char **argv) {
             LocalFree(buffer);
         }
 
+        enable_raw_mode();
+        enable_ansi();
+
         return true; // we print msg from ffailed execution, treat as handled
     }
 
@@ -226,6 +233,9 @@ bool execute_external(int argc, char **argv) {
 
     CloseHandle(piProcInfo.hProcess);
     CloseHandle(piProcInfo.hThread);
+
+    enable_raw_mode();
+    enable_ansi();
 
     return true;
 }

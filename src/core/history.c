@@ -6,6 +6,7 @@
 #include "config/config.h"
 #include "config/rc_parser.h"
 #include "core/repl.h"
+#include "platform/getline.h"
 
 #include <string.h>
 #include <limits.h>
@@ -22,6 +23,10 @@ void history_init() {
     shell_history.start = 0;
 
     shell_history.lines = calloc(shell_config.max_history_len, sizeof(char*));
+    if (!shell_history.lines) {
+        shell_print(SHELL_ERROR, "Failed to init history: calloc failed");
+        return;
+    }
     for (size_t i = 0; i < shell_config.max_history_len; ++i)
         shell_history.lines[i] = calloc(MAX_LINE_LEN, sizeof(char));
 

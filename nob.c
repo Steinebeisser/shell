@@ -41,6 +41,8 @@ int main(int argc, char **argv) {
         "src/platform/windows/externals.c",
         "src/platform/unix/terminal.c",
         "src/platform/windows/terminal.c",
+        "src/platform/unix/input.c",
+        "src/platform/windows/input.c",
     };
 
     Nob_Cmd cmd = {0};
@@ -48,8 +50,8 @@ int main(int argc, char **argv) {
     cmd_append(&cmd, "-Wall");
     cmd_append(&cmd, "-Wextra");
     cmd_append(&cmd, "-g");
-    cmd_append(&cmd, "-fsanitize=address");
-    cmd_append(&cmd, "-fno-omit-frame-pointer");
+    // cmd_append(&cmd, "-fsanitize=address");
+    // cmd_append(&cmd, "-fno-omit-frame-pointer");
 
     cmd_append(&cmd, "-o");
     cmd_append(&cmd, BUILD_DIR"shell");
