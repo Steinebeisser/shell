@@ -24,7 +24,7 @@ void shell_print(Shell_Print_Level level, const char *fmt, ...) {
     }
 
 
-    char buffer[1024];
+    char buffer[8096]; // to be sure, dont want 2 vsnprint calls as its slow
     va_list args;
     va_start(args, fmt);
 
@@ -33,12 +33,24 @@ void shell_print(Shell_Print_Level level, const char *fmt, ...) {
     va_end(args);
 
     size_t len = strlen(buffer);
-    if (len > 0 && buffer[len - 1] == '\n' && len + 1 < sizeof(buffer)) {
-        buffer[len - 1] = '\r';
-        buffer[len]     = '\n';
-        buffer[len + 1] = '\0';
+    char *crlf_buffer = malloc(len * 2 + 1);
+    if (!crlf_buffer) {
+        fputs(temp_sprintf("%s%s\033[0m", level_color_string, "Failed to Format Buffer"), output);
+        fflush(output);
+        return;
     }
+    char *dst = crlf_buffer;
+    for (char *src = buffer; *src; ++src) {
+        if (*src == '\n' && *src - 1 != '\r') {
+            *dst++ = '\r';
+            *dst++ = '\n';
+        } else {
+            *dst++ = *src;
+        }
+    }
+    *dst = '\0';
 
-    fputs(temp_sprintf("%s%s\033[0m", level_color_string, buffer), output);
+    fputs(temp_sprintf("%s%s\033[0m", level_color_string, crlf_buffer), output);
+    free(crlf_buffer);
     fflush(output);
 }

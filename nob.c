@@ -30,6 +30,13 @@ int main(int argc, char **argv) {
         "src/commands/builtins.c",
         "src/commands/commands.c",
         "src/commands/util.c",
+        "src/commands/builtins/builtin_exit.c",
+        "src/commands/builtins/builtin_get.c",
+        "src/commands/builtins/builtin_set.c",
+        "src/commands/builtins/builtin_unset.c",
+        "src/commands/builtins/builtin_util.c",
+        "src/commands/builtins/builtin_source.c",
+        "src/commands/builtins/builtin_help.c",
 
         "src/config/config.c",
         "src/config/rc_parser.c",

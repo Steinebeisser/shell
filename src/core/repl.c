@@ -179,6 +179,8 @@ void repl_loop()  {
             shell_print(SHELL_ERROR, "Error: Unkown or Unimplemented Command: %s\n", argv[0]);
         }
 
+        shell_print(SHELL_INFO, "\n");
+
 cleanup:
         if (argc <= 0) continue;
 

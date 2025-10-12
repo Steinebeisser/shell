@@ -327,11 +327,11 @@ bool parse_rc_line(const char *line) {
     return ret;
 }
 
-bool load__rc_file() {
+bool load__rc_file_path(const char *unexpanded_path, bool error_on_missing) {
     char path[PATH_MAX] = {0};
 
-    if (!expand_path(rc_path_unresolved, path, PATH_MAX)) {
-        LOG_WARN("Failed to expand RC path: %s", rc_path_unresolved);
+    if (!expand_path(unexpanded_path, path, PATH_MAX)) {
+        LOG_WARN("Failed to expand RC path: %s", unexpanded_path);
         return false;
     }
 
@@ -340,24 +340,33 @@ bool load__rc_file() {
 
     FILE *rc_file = fopen(path, "r");
     if (!rc_file) {
-        LOG_DEBUG("Rc File doesnt exist or cant be opened");
-        return true; // doesnt exist so we still return true
+        LOG_DEBUG("Rc File doesnt exist or cant be opened: %s", path);
+        return !error_on_missing; // doesnt exist so we still return true
     }
 
     char *line = NULL;
     size_t len = 0;
+    size_t errors = 0;
 
     while (getline(&line, &len, rc_file) != -1) {
         LOG_DEBUG("RC LINE %s", line);
         // TODO: parse
-        parse_rc_line(line);
+        if (!parse_rc_line(line)) errors += 1;
     }
     LOG_DEBUG("Finished reading rc file");
+
+    if (errors > 0)
+        shell_print(SHELL_WARN, "Failed to parse %llu lines in file %s\n", errors, path);
 
     free(line);
     fclose(rc_file);
 
     return true;
+}
+
+bool load__rc_file() {
+    bool error_on_missing = false;
+    return load__rc_file_path(rc_path_unresolved, error_on_missing);
 }
 
 char *trim_newline(const char *line) {

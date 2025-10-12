@@ -1,0 +1,84 @@
+/*
+typedef struct Builtin {
+    const char *name;
+    const char *usage;
+    const char *description;
+    const char **examples;
+    const char **flags;
+    BuiltinFunc func;
+
+    const Builtin *subcommands;
+    size_t num_subcommands;
+} Builtin;
+*/
+
+#define STR_ARRAY(...) ((const char*[]){ __VA_ARGS__, NULL})
+
+BUILTIN(exit,
+        "exit [optional] <uint8>",
+        "Exits the shell",
+        STR_ARRAY(
+            "exit 2"
+        ),
+        NULL,
+        builtin_exit
+)
+
+BUILTIN(set,
+        "set [optional] (<modifier>) <key> = <value>",
+        "Sets a config for current session",
+        STR_ARRAY(
+            "set(alias) ls = 'ls -l' -p",
+            "set $ic = red",
+            "set prompt = \"Prompt > \""
+        ),
+        STR_ARRAY(
+            "-p/--persistence: persist to file",
+            "-f/--force: force it"
+        ),
+        builtin_set
+)
+
+BUILTIN(unset,
+        "unset [optional] (<modifier>) <key>",
+        "unset a config for current session to default value",
+        STR_ARRAY(
+            "unset(alias) ls",
+            "unset $ic"
+        ),
+        STR_ARRAY(
+            "-p/--persistence: persist to file",
+            "-f/--force: force it"
+        ),
+        builtin_unset
+)
+
+BUILTIN(get,
+        "unset [optional] (<modifier>) <key>",
+        "prints a value to stdout",
+        STR_ARRAY(
+            "get(alias) ls",
+            "get $ic"
+        ),
+        NULL,
+        builtin_unset
+)
+
+BUILTIN(source,
+        "source [optional] <filepath>",
+        "source/loads file, if no path provided takes default path ~/.shellrc",
+        NULL,
+        NULL,
+        builtin_source
+)
+
+BUILTIN(help,
+        "help <builtin>",
+        "help command",
+        STR_ARRAY(
+            "help set",
+            "help unset"
+        ),
+        NULL,
+        builtin_help
+)

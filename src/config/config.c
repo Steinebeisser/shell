@@ -136,7 +136,7 @@ const char *get_alias(const char *key) {
 bool set_timeout(const char *value) {
     int new_value = 0;
     if (!parse_string_to_int(value, &new_value)) return false;
-    shell_config.max_history_len = new_value;
+    shell_config.timeout = new_value;
     return true;
 }
 
