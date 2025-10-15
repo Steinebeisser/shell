@@ -2,44 +2,18 @@
 
 #define PGS_LOG_STRIP_PREFIX
 #include "third_party/pgs_log.h"
+#include "third_party/nob.h"
 
 #include "color_utils.h"
 #include "core/shell_print.h"
 #include "config.h"
-#include <limits.h>
+#include "config/env.h"
+#include "config/alias.h"
 #include "platform/getline.h"
 
-#include "third_party/nob.h"
+#include <limits.h>
 
 const char *rc_path_unresolved = "~/.shellrc";
-
-typedef bool (*ConfigHandler)(const char *value);
-typedef bool (*UnsetHandler)();
-typedef const char *(*GetHandler)();
-
-typedef struct {
-    const char    *name;
-    ConfigHandler handler;
-    UnsetHandler  unset_handler;
-    GetHandler    get_handler;
-} Options;
-
-Options options[] = {
-    {"info_color",           set_info_color,           unset_info_color,           get_info_color},
-    {"warn_color",           set_warn_color,           unset_warn_color,           get_warn_color},
-    {"error_color",          set_error_color,          unset_error_color,          get_error_color},
-    {"prompt",               set_prompt,               unset_prompt,               get_prompt},
-    {"show_cmd_path",        set_show_cmd_path,        unset_show_cmd_path,        get_show_cmd_path},
-    {"show_expanded_alias",  set_show_expanded_alias,  unset_show_expanded_alias,  get_show_expanded_alias},
-    {"show_exit_code",       set_show_exit_code,       unset_show_exit_code,       get_show_exit_code},
-    {"allow_env_override",   set_allow_env_override,   unset_allow_env_override,   get_allow_env_override},
-    {"timeout",              set_timeout,              unset_timeout,              get_timeout},
-    {"terminal_mode",        set_terminal_mode,        unset_terminal_mode,        get_terminal_mode},
-    {"enable_history_file",  set_enable_history_file,  unset_enable_history_file,  get_enable_history_file},
-    {"enable_history",       set_enable_history,       unset_enable_history,       get_enable_history},
-    {"max_history_len",      set_max_history_len,      unset_max_history_len,      get_max_history_len},
-    {"history_file",         set_history_file,         unset_history_file,         get_history_file},
-};
 
 typedef struct {
     bool is_valid;
@@ -282,14 +256,14 @@ bool parse_rc_line(const char *line) {
         } else if (info.is_alias) {
             ret = unset_alias(info.key);
         } else {
-            bool handled = false;
-            for (size_t i = 0; i < NOB_ARRAY_LEN(options); i++) {
-                if (strcmp(info.key, options[i].name) == 0) {
-                    handled = options[i].unset_handler();
-                    break;
-                }
-            }
-            if (!handled) {
+            // bool handled = false;
+            // for (size_t i = 0; i < NOB_ARRAY_LEN(options); i++) {
+            //     if (strcmp(info.key, options[i].name) == 0) {
+            //         handled = options[i].unset_handler();
+            //         break;
+            //     }
+            // }
+            if (!unset_config_field(info.key)) {
                 LOG_WARN("Unknown option %s", info.key);
                 ret = false;
             } else {
@@ -302,14 +276,7 @@ bool parse_rc_line(const char *line) {
         } else if (info.is_alias) {
             ret = set_alias(info.key, info.value);
         } else {
-            bool handled = false;
-            for (size_t i = 0; i < NOB_ARRAY_LEN(options); i++) {
-                if (strcmp(info.key, options[i].name) == 0) {
-                    handled = options[i].handler(info.value);
-                    break;
-                }
-            }
-            if (!handled) {
+            if (!set_config_field(info.key, info.value)) {
                 LOG_WARN("Failed to Set Value for key: `%s`", info.key);
                 shell_print(SHELL_WARN, "Failed to Set Value for key: `%s`\n", info.key);
                 ret = false;
@@ -352,6 +319,7 @@ bool load__rc_file_path(const char *unexpanded_path, bool error_on_missing) {
         LOG_DEBUG("RC LINE %s", line);
         // TODO: parse
         if (!parse_rc_line(line)) errors += 1;
+        LOG_ERROR("Failed to parse line: %s", line);
     }
     LOG_DEBUG("Finished reading rc file");
 
@@ -602,12 +570,13 @@ const char* get_rc_value(const char *line, bool insta_print) {
     } else if (info.is_env) {
         result = get_env(info.key);
     } else {
-        for (size_t i = 0; i < NOB_ARRAY_LEN(options); i++) {
-            if (strcmp(info.key, options[i].name) == 0) {
-                result = options[i].get_handler();
-                break;
-            }
-        }
+        // for (size_t i = 0; i < NOB_ARRAY_LEN(options); i++) {
+        //     if (strcmp(info.key, options[i].name) == 0) {
+        //         result = options[i].get_handler();
+        //         break;
+        //     }
+        // }
+        result = get_config_field(info.key);
     }
 
     if (insta_print) {

@@ -13,7 +13,7 @@ Builtin builtin_table[] = {
 };
 
 #undef BUILTIN
-const size_t num_builtins = sizeof(builtin_table) / sizeof(builtin_table[0]);
+const size_t num_builtins = NOB_ARRAY_LEN(builtin_table);
 
 int execute_builtin(int argc, const char **argv) {
     LOG_DEBUG("Testing if Builtin exists: %s, with %d additional argv", argv[0], argc - 1);

@@ -73,7 +73,7 @@ BUILTIN(source,
 )
 
 BUILTIN(help,
-        "help <builtin>",
+        "help <builtin> | env | alias",
         "help command",
         STR_ARRAY(
             "help set",

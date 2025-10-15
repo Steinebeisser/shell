@@ -1,0 +1,161 @@
+// #define CONFIG(name, type, default_value, description, valid_options, set_func, get_func)
+
+#define STR_ARRAY(...) ((const char*[]){ __VA_ARGS__, NULL})
+
+CONFIG(info_color,
+        int,
+        97,
+        "Info Color, used for everything thats not a warning or Error",
+        NULL,
+        set_info_color, get_info_color
+)
+
+CONFIG(warn_color,
+        int,
+        93,
+        "Warn Color, Used for warnings",
+        NULL,
+        set_warn_color, get_warn_color
+)
+
+CONFIG(error_color,
+        int,
+        91,
+        "Error Color, Used for Errors",
+        NULL,
+        set_error_color, get_error_color
+)
+
+CONFIG(prompt,
+        string64,
+        "Shell > ",
+        "Shll Prompt",
+        STR_ARRAY(
+            "63 Char long array"
+        ),
+        NULL, NULL
+)
+
+CONFIG(timeout,
+        int64_t,
+        -1,
+        "Timeout Value for Commands",
+        STR_ARRAY(
+            " < 0 = infinite",
+            " > 0 = timeout in ms",
+            "max value = 9223372036854775807 (~2.92271e+6 centuries)"
+        ),
+        NULL, NULL
+)
+
+CONFIG(show_cmd_path,
+        bool,
+        false,
+        "If Enabled will display the full path of the executed binary",
+        STR_ARRAY(
+            "1 = true",
+            "true",
+            "0 = false",
+            "false"
+        ),
+        NULL, NULL
+)
+
+CONFIG(show_expanded_alias,
+        bool,
+        false,
+        "If Enabled will show the expanded alias",
+        STR_ARRAY(
+            "1 = true",
+            "true",
+            "0 = false",
+            "false"
+        ),
+        NULL, NULL
+)
+
+CONFIG(show_exit_code,
+        bool,
+        false,
+        "If Enabled will show the exit code after execution finished",
+        STR_ARRAY(
+            "1 = true",
+            "true",
+            "0 = false",
+            "false"
+        ),
+        NULL, NULL
+)
+
+CONFIG(allow_env_override,
+        bool,
+        false,
+        "If Enabled will allow to override exisitng envs, if not enabled u have to unset the env beforehand",
+        STR_ARRAY(
+            "1 = true",
+            "true",
+            "0 = false",
+            "false"
+        ),
+        NULL, NULL
+)
+
+CONFIG(terminal_mode,
+        TerminalMode,
+        TERM_MODE_NORMAL,
+        "Will set the input Mode",
+        STR_ARRAY(
+            "normal = nromal mode as in every shell",
+            "vi = vi mode, normal/visual/insert etc - not implemented yet",
+            "emacs = idk never used emacs - not implemented yet"
+        ),
+        NULL, NULL
+)
+
+CONFIG(enable_history_file,
+        bool,
+        true,
+        "Will create a history file to keep history over sessions",
+        STR_ARRAY(
+            "1 = true",
+            "true",
+            "0 = false",
+            "false"
+        ),
+        NULL, NULL
+)
+
+CONFIG(enable_history,
+        bool,
+        true,
+        "Will enable hisotry, takes more memory but u ahve a history",
+        STR_ARRAY(
+            "1 = true",
+            "true",
+            "0 = false",
+            "false"
+        ),
+        NULL, NULL
+)
+
+CONFIG(max_history_len,
+       size_t,
+       4096,
+       "Amount of history to be saved",
+       STR_ARRAY(
+           "Anything from 0 to size_t_max, keep in mind the higher history len, the higher mem usage, if size_t max = 128 exabytes which im pretty sure no one will have"
+        ),
+        NULL, NULL
+)
+
+CONFIG(history_file,
+        char_ptr,
+        "~/.shellhistory",
+        "File where to persist history over sessions",
+        STR_ARRAY(
+            "string"
+        ),
+        NULL, NULL
+)
+
+

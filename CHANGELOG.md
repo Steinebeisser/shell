@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.8.0] - 2025-10-15
+- internal restruct, config, extend help
+    - xmacro for creating config
+    - removing blaot by autogenerating entries and parsing based on type
+    - better scalability/maintainablity
+
+---
+
+## [0.7.0] - 2025-10-12
+- internal restructure, help cmd
+    - source cmd
+    - x macros for creating commands and automatic help
+
+---
+
 ## [0.6.1] - 2025-10-10
 - Windows Imp for 0.6
 

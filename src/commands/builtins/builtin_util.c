@@ -157,13 +157,13 @@ void handle_rc_command(const char *cmd, int argc, const char **argv) {
     if (!line) {
       shell_print(SHELL_ERROR, "Failed to merge argv\n");
       LOG_ERROR("Failed to merge argv");
-      goto set_cleanup2;
+      goto cleanup;
     }
 
     if (strcmp(argv[0], "get") == 0) {
       bool insta_print = true;
       get_rc_value(line, insta_print);
-      goto set_cleanup2;
+      goto cleanup;
     }
 
     LOG_DEBUG("Parsing %s", line);
@@ -175,7 +175,7 @@ void handle_rc_command(const char *cmd, int argc, const char **argv) {
     if (!parse_rc_line(line)) {
       shell_print(SHELL_ERROR, "Failed to parse statement\n");
       LOG_ERROR("Failed to parse statement for line %s", line);
-      goto set_cleanup1;
+      goto cleanup;
     }
 
     if (is_force) {
@@ -189,7 +189,7 @@ void handle_rc_command(const char *cmd, int argc, const char **argv) {
         char *pline = strdup(temp_sprintf("%s : added via -p flag\n", (const char*)line));
         if (!pline) {
           LOG_ERROR("Failed to get line");
-          goto set_cleanup1;
+          goto cleanup;
         }
         if (!append_rc_file((const char *)pline, is_force, is_comment)) {
           shell_print(SHELL_ERROR, "Failed to persist setting\n");
@@ -204,11 +204,14 @@ void handle_rc_command(const char *cmd, int argc, const char **argv) {
       }
     }
 
-set_cleanup1:
-    free(line);
-set_cleanup2:
-    for (int i = 0; i < flag_argc; ++i) free(flag_argv[i]);
-    free(flag_argv);
-    for (int i = 0; i < new_argc; ++i) free(new_argv[i]);
-    free(new_argv);
+cleanup:
+    if (line) free(line);
+    if (flag_argv) {
+        for (int i = 0; i < flag_argc; ++i) free(flag_argv[i]);
+        free(flag_argv);
+    }
+    if (new_argv) {
+        for (int i = 0; i < new_argc; ++i) free(new_argv[i]);
+        free(new_argv);
+    }
 }

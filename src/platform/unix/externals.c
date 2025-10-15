@@ -57,7 +57,7 @@ bool execute_external(int argc, char **argv) {
     }
 
     if (pid == 0) {
-        if (shell_config.show_full_cmd_path) {
+        if (shell_config.show_cmd_path) {
             shell_print(SHELL_INFO, "%s\n", resolved_path);
             free(resolved_path);
         }

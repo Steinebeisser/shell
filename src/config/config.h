@@ -2,115 +2,61 @@
 #define STEIN_SHELL_CONFIG_H
 
 #include "core/shell_input.h"
+#include "config/env.h"
+#include "config/alias.h"
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
-#define MAX_ALIASES 128
-#define MAX_ALIAS_KEY_LEN 32
-#define MAX_ALIAS_VALUE_LEN 128
 
-#define MAX_ENVS 256
-#define MAX_ENV_KEY_LEN 64
-#define MAX_ENV_VALUE_LEN 256
-
+#define CONFIG(name, type, default_value, description, valid_options, set_func, get_func) \
+    type name;
+typedef char string64[64];
+typedef char* char_ptr;
 typedef struct {
-    char key[MAX_ALIAS_KEY_LEN];
-    char value[MAX_ALIAS_VALUE_LEN];
-} Alias;
-
-typedef struct {
-    char key[MAX_ENV_KEY_LEN];
-    char value[MAX_ENV_VALUE_LEN];
-} Env;
-
-typedef struct {
-    int info_color;
-    int warn_color;
-    int error_color;
-    char prompt[64];
+    #include "config.def"
     Alias aliases[MAX_ALIASES];
     size_t alias_count;
-    int64_t timeout;
-    bool show_full_cmd_path;
-    bool show_full_alias_cmd;
-    bool show_exit_code;
     Env envs[MAX_ENVS];
     size_t env_count;
-    bool allow_env_override;
-    TerminalMode terminal_mode;
-    bool enable_history_file;
-    bool enable_history;
-    size_t max_history_len;
-    char *history_file;
 } ShellConfig;
+
+#undef CONFIG
+
+typedef struct {
+    const char *name;
+    const char *description;
+    const char **valid_options;
+    bool (*set)(const char *value);
+    const char *(*get)();
+} ConfigField;
+
+
+extern ConfigField config_fields[];
+extern const size_t num_config;
 
 extern ShellConfig shell_config;
 
-bool set_info_color(const char *value);
-bool unset_info_color();
-const char *get_info_color();
+bool set_config_field(const char *name, const char *value);
+bool unset_config_field(const char *name);
+const char *get_config_field(const char *name);
 
-bool set_warn_color(const char *value);
-bool unset_warn_color();
-const char *get_warn_color(); // TODO: color struct with rgb/int/char depending what exists
+bool str_to_int(const char *value, int *out);
+bool str_to_string64(const char *value, string64 *out);
+bool str_to_int64_t(const char *value, int64_t *out);
+bool str_to_bool(const char *value, bool *out);
+bool str_to_TerminalMode(const char *value, TerminalMode *out);
+bool str_to_size_t(const char *value, size_t *out);
+bool str_to_char_ptr(const char *value, char_ptr *out);
 
-bool set_error_color(const char *value);
-bool unset_error_color();
-const char *get_error_color();
-
-bool set_prompt(const char *value);
-bool unset_prompt();
-const char *get_prompt();
-
-bool set_alias(const char *key, const char *value);
-bool unset_alias(const char *key);
-const char *get_alias(const char *key);
-
-bool set_timeout(const char *value);
-bool unset_timeout();
-const char *get_timeout();
-
-bool set_show_cmd_path(const char *value);
-bool unset_show_cmd_path();
-const char *get_show_cmd_path();
-
-bool set_show_expanded_alias(const char *value);
-bool unset_show_expanded_alias();
-const char *get_show_expanded_alias();
-
-bool set_show_exit_code(const char *value);
-bool unset_show_exit_code();
-const char *get_show_exit_code();
-
-bool set_allow_env_override(const char *value);
-bool unset_allow_env_override();
-const char *get_allow_env_override();
-
-bool set_env(const char *key, const char *value);
-bool unset_env(const char *key);
-const char *get_env(const char *key);
-
-bool set_terminal_mode(const char *value);
-bool unset_terminal_mode();
-const char *get_terminal_mode();
-
-bool set_enable_history_file(const char *value);
-bool unset_enable_history_file();
-const char *get_enable_history_file();
-
-bool set_enable_history(const char *value);
-bool unset_enable_history();
-const char *get_enable_history();
-
-bool set_max_history_len(const char *value);
-bool unset_max_history_len();
-const char *get_max_history_len();
-
-bool set_history_file(const char *value);
-bool unset_history_file();
-const char *get_history_file();
+const char *int_to_str(int value);
+const char *string64_to_str(string64 value);
+const char *int64_t_to_str(int64_t value);
+const char *bool_to_str(bool value);
+const char *TerminalMode_to_str(TerminalMode value);
+const char *size_t_to_str(size_t value);
+const char *char_ptr_to_str(char_ptr value);
 
 bool load_rc_file();
 

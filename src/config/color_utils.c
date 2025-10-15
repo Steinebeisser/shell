@@ -102,12 +102,35 @@ const char *get_color(const char *color_type) {
 
     for (size_t i = 0; i < sizeof(color_table)/sizeof(color_table[0]); i++) {
         if (color_table[i].code == code) {
-            return strdup(color_table[i].name);
+            return color_table[i].name;
         }
     }
 
-    char buf[16];
+    static char buf[16];
     snprintf(buf, sizeof(buf), "%d", code);
-    return strdup(buf);
+    return buf;
 }
 
+
+bool set_info_color(const char *value) {
+    return set_color("info", value);
+}
+
+bool set_warn_color(const char *value) {
+    return set_color("warn", value);
+}
+
+bool set_error_color(const char *value) {
+    return set_color("error", value);
+}
+
+const char *get_info_color() {
+    return get_color("info");
+}
+
+const char *get_warn_color() {
+    return get_color("warn");
+}
+const char *get_error_color() {
+    return get_color("error");
+}

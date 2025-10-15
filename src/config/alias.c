@@ -2,9 +2,19 @@
 
 #define PGS_LOG_STRIP_PREFIX
 #include "third_party/pgs_log.h"
+#include "third_party/nob.h"
 
 #include "config.h"
 #define MAX_ALIAS_EXPANSION 10
+
+#define ALIAS(key_str, value_str, description) \
+    { key_str, value_str, description } ,
+AliasField alias_fields[] = {
+    #include "alias.def"
+};
+#undef ALIAS
+
+size_t alias_fields_count = NOB_ARRAY_LEN(alias_fields);
 
 bool tokenize_alias_value(const char *value, char ***out_argv, int *out_argc) {
     if (!value || !out_argv || !out_argc) return 0;
@@ -63,7 +73,7 @@ bool tokenize_alias_value(const char *value, char ***out_argv, int *out_argc) {
     return true;
 }
 
-const char *get__alias(const char *key) {
+const char *get_alias(const char *key) {
     if (!key) return NULL;
 
     for (size_t i = 0; i < shell_config.alias_count; ++i) {
@@ -75,7 +85,7 @@ const char *get__alias(const char *key) {
     return NULL;
 }
 
-bool set__alias(const char *key, const char *value) {
+bool set_alias(const char *key, const char *value) {
     if (!key || !value) return false;
 
     for (size_t i = 0; i < shell_config.alias_count; ++i) {
@@ -101,7 +111,7 @@ bool set__alias(const char *key, const char *value) {
 }
 
 // we wanna unset, dont care iif it exists or not
-bool unset__alias(const char *key) {
+bool unset_alias(const char *key) {
     LOG_DEBUG("Unsetting alias %s", key);
     if (!key) return true;
 

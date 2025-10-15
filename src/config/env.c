@@ -2,10 +2,20 @@
 
 #define PGS_LOG_STRIP_PREFIX
 #include "third_party/pgs_log.h"
+#include "third_party/nob.h"
 
 #include "config.h"
 #include "core/shell_print.h"
 #include "platform/env.h"
+
+#define ENV(key_str, value_str, description) \
+    { key_str, value_str, description } ,
+EnvField env_fields[] = {
+    #include "env.def"
+};
+#undef ENV
+
+size_t env_fields_count = NOB_ARRAY_LEN(env_fields);
 
 int get_env_idx(const char *key) {
     for (size_t i = 0; i < shell_config.env_count; ++i) {
@@ -17,7 +27,7 @@ int get_env_idx(const char *key) {
     return -1;
 }
 
-bool set__env(const char *key, const char *value) {
+bool set_env(const char *key, const char *value) {
     if (!key || !value) return false;
 
     int idx = get_env_idx(key);
@@ -73,7 +83,7 @@ bool set__env(const char *key, const char *value) {
 }
 
 // we dont care f it exists, just say it did
-bool unset__env(const char *key) {
+bool unset_env(const char *key) {
     LOG_DEBUG("Unsetting env: %s", key);
     if (!key) return true;
 
@@ -91,7 +101,8 @@ bool unset__env(const char *key) {
 
     return true;
 }
-const char *get__env(const char *key) {
+
+const char *get_env(const char *key) {
     if (!key) return NULL;
 
     int idx = get_env_idx(key);
@@ -139,10 +150,11 @@ bool expand_envs(int argc, char **argv) {
                 memcpy(key, start, key_len);
 
                 key[key_len] = '\0';
-                const char *value = get__env(key);
+                const char *value = get_env(key);
                 if (!value) {
                     LOG_ERROR("Failed to resolve env key, pls escape normal Dollar Signs, Key: %s", key);
                     shell_print(SHELL_ERROR, "Failed to resolve env key, pls escape normal Dollar Signs, Key: %s\n", key);
+                    free(dst_start);
                     return false;
                 }
 

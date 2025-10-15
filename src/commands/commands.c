@@ -20,7 +20,7 @@
 bool execute_command(int argc, char **argv) {
     if (argc == 0) return false;
 
-    const char *alias_value = get__alias(argv[0]);
+    const char *alias_value = get_alias(argv[0]);
 
 
     int execute_argc = argc;
@@ -45,7 +45,7 @@ bool execute_command(int argc, char **argv) {
 
         free(alias_args);
 
-        if (shell_config.show_full_alias_cmd) {
+        if (shell_config.show_expanded_alias) {
             char *full_alias_cmd = NULL;
             size_t total_length = 0;
             for (int i = 0; i < execute_argc; i++) {
