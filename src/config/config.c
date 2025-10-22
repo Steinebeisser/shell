@@ -28,7 +28,7 @@ Alias default_aliases[] = {
 };
 #undef ALIAS
 
-#define CONFIG(name, type, default_value, description, valid_options, set_func, get_func) \
+#define CONFIG(name, type, default_value, description, valid_options, set_func, get_func, aliases) \
     .name = default_value,
 ShellConfig default_shell_config = {
     #include "config.def"
@@ -39,8 +39,8 @@ ShellConfig default_shell_config = {
 };
 
 #undef CONFIG
-#define CONFIG(name, type, default_value, description, valid_options, set_func, get_func) \
-    { #name, description, valid_options, set_func, get_func },
+#define CONFIG(name, type, default_value, description, valid_options, set_func, get_func, aliases) \
+    { #name, description, valid_options, set_func, get_func, aliases },
 ConfigField config_fields[] = {
     #include "config.def"
 };
@@ -51,7 +51,7 @@ const size_t num_config = NOB_ARRAY_LEN(config_fields);
 bool set_config_field(const char *name, const char *value) {
     if (!name || !value) return false;
 
-#define CONFIG(config_name, type, default_value, description, valid_options, set_func, get_func) \
+#define CONFIG(config_name, type, default_value, description, valid_options, set_func, get_func, aliases) \
     if (strcmp(name, #config_name) == 0) {\
         if (set_func != NULL) return ((bool (*)(const char *))set_func)(value); \
         type out_value; \
@@ -171,7 +171,7 @@ bool unset_config_field(const char *name) {
     if (!name) return false;
 
 #pragma GCC diagnostic ignored "-Wint-to-pointer-cast"
-#define CONFIG(config_name, type, default_value, description, valid_options, set_func, get_func) \
+#define CONFIG(config_name, type, default_value, description, valid_options, set_func, get_func, aliases) \
     if (strcmp(name, #config_name) == 0) { \
         if (strcmp(#type, "char_ptr") == 0 && shell_config.config_name) free((void *)shell_config.config_name); \
         memcpy(&shell_config.config_name, &default_shell_config.config_name, sizeof(type)); \
@@ -189,7 +189,7 @@ bool unset_config_field(const char *name) {
 const char *get_config_field(const char *name) {
     if (!name) return NULL;
 
-#define CONFIG(config_name, type, default_value, description, valid_options, set_func, get_func) \
+#define CONFIG(config_name, type, default_value, description, valid_options, set_func, get_func, aliases) \
     if (strcmp(name, #config_name) == 0) {\
         if (get_func != NULL) return ((const char* (*)(void))get_func)(); \
         if (strcmp(#type, "char_ptr") == 0) { \
@@ -197,6 +197,34 @@ const char *get_config_field(const char *name) {
             return value; \
         } \
         const char *value = type##_to_str(shell_config.config_name); \
+        return value; \
+    }
+
+#include "config.def"
+
+#undef CONFIG
+
+    return NULL;
+}
+
+const char *get_default_config_field(const char *name) {
+    if (!name) return NULL;
+
+#define CONFIG(config_name, type, default_value, description, valid_options, set_func, get_func, aliases) \
+    if (strcmp(name, #config_name) == 0) {\
+        if (get_func != NULL) { \
+            /* sneaky hack, "temporary" 2025-10-22*/ \
+            ShellConfig saved = shell_config; \
+            shell_config = default_shell_config; \
+            const char *value = ((const char* (*)(void))get_func)(); \
+            shell_config = saved; \
+            return value; \
+        } \
+        if (strcmp(#type, "char_ptr") == 0) { \
+            const char *value = (const char *)default_shell_config.config_name ? (const char *)default_shell_config.config_name : #default_value; \
+            return value; \
+        } \
+        const char *value = type##_to_str(default_shell_config.config_name); \
         return value; \
     }
 

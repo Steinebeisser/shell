@@ -68,23 +68,6 @@ bool set_color(const char *color_type, const char *value) {
     return true;
 }
 
-bool unset_color(const char *color_type) {
-    int white = 97;
-
-    if (strcmp(color_type, "info") == 0) {
-        shell_config.info_color = white;
-    } else if (strcmp(color_type, "warn") == 0) {
-        shell_config.warn_color = white;
-    } else if (strcmp(color_type, "error") == 0) {
-        shell_config.error_color = white;
-    } else {
-        LOG_WARN("Unknown color type passed: %s", color_type);
-        return false;
-    }
-
-    return true;
-}
-
 
 const char *get_color(const char *color_type) {
     int code;
@@ -124,6 +107,10 @@ bool set_error_color(const char *value) {
     return set_color("error", value);
 }
 
+bool set_help_color(const char *value) {
+    return set_color("help", value);
+}
+
 const char *get_info_color() {
     return get_color("info");
 }
@@ -131,6 +118,11 @@ const char *get_info_color() {
 const char *get_warn_color() {
     return get_color("warn");
 }
+
 const char *get_error_color() {
+    return get_color("error");
+}
+
+const char *get_help_color() {
     return get_color("error");
 }

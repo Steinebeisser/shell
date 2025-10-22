@@ -128,7 +128,7 @@ bool execute_external(int argc, char **argv) {
 
     wchar_t *full_cmd_path = resolve_command_path(argv[0], path, pathext);
     if (!full_cmd_path) return false;
-    if (shell_config.show_full_cmd_path) shell_print(SHELL_INFO, "%ls\n", full_cmd_path);
+    if (shell_config.show_cmd_path) shell_print(SHELL_INFO, "%ls\n", full_cmd_path);
 
     argv[0] = wchar_to_char(full_cmd_path);
     wchar_t *quoted_cmd = quote_cmd(argc, argv);

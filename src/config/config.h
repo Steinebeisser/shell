@@ -10,7 +10,7 @@
 #include <stdint.h>
 
 
-#define CONFIG(name, type, default_value, description, valid_options, set_func, get_func) \
+#define CONFIG(name, type, default_value, description, valid_options, set_func, get_func, aliases) \
     type name;
 typedef char string64[64];
 typedef char* char_ptr;
@@ -30,6 +30,7 @@ typedef struct {
     const char **valid_options;
     bool (*set)(const char *value);
     const char *(*get)();
+    const char **aliases;
 } ConfigField;
 
 
@@ -41,6 +42,7 @@ extern ShellConfig shell_config;
 bool set_config_field(const char *name, const char *value);
 bool unset_config_field(const char *name);
 const char *get_config_field(const char *name);
+const char *get_default_config_field(const char *name);
 
 bool str_to_int(const char *value, int *out);
 bool str_to_string64(const char *value, string64 *out);

@@ -73,11 +73,15 @@ BUILTIN(source,
 )
 
 BUILTIN(help,
-        "help <builtin> | env | alias",
-        "help command",
+        "help <builtin> | env | alias | config | <config_field>",
+        "shows help for commands, envs, aliases, config, etc, maybe u find sth cool by just typing nonsense",
         STR_ARRAY(
             "help set",
-            "help unset"
+            "help unset",
+            "help color",
+            "help ic",
+            "help config",
+            "help"
         ),
         NULL,
         builtin_help

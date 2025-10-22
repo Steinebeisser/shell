@@ -16,7 +16,11 @@
 bool executable_exists(const char *name, char **out_path) {
     if (!name || name[0] == '\0') return false;
     if (strchr(name, '/')) {
-        return access(name, X_OK) == 0;
+        if(access(name, X_OK) == 0) {
+            *out_path = strdup(name);
+            return true;
+        }
+        return false;
     }
     const char *path = getenv("PATH");
     if (!path) path = "/bin:/usr/bin";
@@ -61,8 +65,8 @@ bool execute_external(int argc, char **argv) {
             shell_print(SHELL_INFO, "%s\n", resolved_path);
             free(resolved_path);
         }
-        execvp(argv[0], argv);
-        LOG_ERROR("execvp(%s) failed: %s", argv[0], strerror(errno));
+        execv(resolved_path, argv);
+        LOG_ERROR("execv(%s) failed: %s", argv[0], strerror(errno));
         _exit(1);
     } else {
         int status;

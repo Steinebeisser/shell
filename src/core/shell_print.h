@@ -5,6 +5,7 @@ typedef enum {
     SHELL_INFO,
     SHELL_WARN,
     SHELL_ERROR,
+    SHELL_HELP,
 } Shell_Print_Level;
 
 void shell_print(Shell_Print_Level level, const char *fmt, ...);

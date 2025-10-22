@@ -16,6 +16,7 @@ void shell_print(Shell_Print_Level level, const char *fmt, ...) {
                 level_color_string = temp_sprintf("\033[%dm", shell_config.error_color);
                 output = stderr;
                 break;
+        case SHELL_HELP: level_color_string = temp_sprintf("\033[%dm", shell_config.help_color); break;
     }
 
     if (!level_color_string) {

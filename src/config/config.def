@@ -1,4 +1,4 @@
-// #define CONFIG(name, type, default_value, description, valid_options, set_func, get_func)
+// #define CONFIG(name, type, default_value, description, valid_options, set_func, get_func, aliases)
 
 #define STR_ARRAY(...) ((const char*[]){ __VA_ARGS__, NULL})
 
@@ -7,7 +7,12 @@ CONFIG(info_color,
         97,
         "Info Color, used for everything thats not a warning or Error",
         NULL,
-        set_info_color, get_info_color
+        set_info_color, get_info_color,
+        STR_ARRAY(
+            "ic",
+            "color",
+            "info"
+        )
 )
 
 CONFIG(warn_color,
@@ -15,7 +20,12 @@ CONFIG(warn_color,
         93,
         "Warn Color, Used for warnings",
         NULL,
-        set_warn_color, get_warn_color
+        set_warn_color, get_warn_color,
+        STR_ARRAY(
+            "wc",
+            "color",
+            "warn"
+        )
 )
 
 CONFIG(error_color,
@@ -23,7 +33,25 @@ CONFIG(error_color,
         91,
         "Error Color, Used for Errors",
         NULL,
-        set_error_color, get_error_color
+        set_error_color, get_error_color,
+        STR_ARRAY(
+            "wc",
+            "color",
+            "error"
+        )
+)
+
+CONFIG(help_color,
+        int,
+        96,
+        "Help Color, used for Help command",
+        NULL,
+        set_help_color, get_help_color,
+        STR_ARRAY(
+            "hc",
+            "color",
+            "help"
+        )
 )
 
 CONFIG(prompt,
@@ -33,7 +61,11 @@ CONFIG(prompt,
         STR_ARRAY(
             "63 Char long array"
         ),
-        NULL, NULL
+        NULL, NULL,
+        STR_ARRAY(
+            "string",
+            "p"
+        )
 )
 
 CONFIG(timeout,
@@ -45,7 +77,10 @@ CONFIG(timeout,
             " > 0 = timeout in ms",
             "max value = 9223372036854775807 (~2.92271e+6 centuries)"
         ),
-        NULL, NULL
+        NULL, NULL,
+        STR_ARRAY(
+            "time"
+        )
 )
 
 CONFIG(show_cmd_path,
@@ -58,7 +93,13 @@ CONFIG(show_cmd_path,
             "0 = false",
             "false"
         ),
-        NULL, NULL
+        NULL, NULL,
+        STR_ARRAY(
+            "cmd",
+            "path",
+            "full",
+            "show"
+        )
 )
 
 CONFIG(show_expanded_alias,
@@ -71,7 +112,12 @@ CONFIG(show_expanded_alias,
             "0 = false",
             "false"
         ),
-        NULL, NULL
+        NULL, NULL,
+        STR_ARRAY(
+            "alias",
+            "full",
+            "show"
+        )
 )
 
 CONFIG(show_exit_code,
@@ -84,7 +130,12 @@ CONFIG(show_exit_code,
             "0 = false",
             "false"
         ),
-        NULL, NULL
+        NULL, NULL,
+        STR_ARRAY(
+            "exit",
+            "code",
+            "show"
+        )
 )
 
 CONFIG(allow_env_override,
@@ -97,7 +148,12 @@ CONFIG(allow_env_override,
             "0 = false",
             "false"
         ),
-        NULL, NULL
+        NULL, NULL,
+        STR_ARRAY(
+            "override",
+            "env",
+            "allow"
+        )
 )
 
 CONFIG(terminal_mode,
@@ -109,7 +165,13 @@ CONFIG(terminal_mode,
             "vi = vi mode, normal/visual/insert etc - not implemented yet",
             "emacs = idk never used emacs - not implemented yet"
         ),
-        NULL, NULL
+        NULL, NULL,
+        STR_ARRAY(
+            "vi",
+            "emcas",
+            "mode",
+            "input"
+        )
 )
 
 CONFIG(enable_history_file,
@@ -122,7 +184,11 @@ CONFIG(enable_history_file,
             "0 = false",
             "false"
         ),
-        NULL, NULL
+        NULL, NULL,
+        STR_ARRAY(
+            "history",
+            "file"
+        )
 )
 
 CONFIG(enable_history,
@@ -135,7 +201,10 @@ CONFIG(enable_history,
             "0 = false",
             "false"
         ),
-        NULL, NULL
+        NULL, NULL,
+        STR_ARRAY(
+            "history"
+        )
 )
 
 CONFIG(max_history_len,
@@ -145,7 +214,12 @@ CONFIG(max_history_len,
        STR_ARRAY(
            "Anything from 0 to size_t_max, keep in mind the higher history len, the higher mem usage, if size_t max = 128 exabytes which im pretty sure no one will have"
         ),
-        NULL, NULL
+        NULL, NULL,
+        STR_ARRAY(
+            "history",
+            "length",
+            "len"
+        )
 )
 
 CONFIG(history_file,
@@ -155,7 +229,12 @@ CONFIG(history_file,
         STR_ARRAY(
             "string"
         ),
-        NULL, NULL
+        NULL, NULL,
+        STR_ARRAY(
+            "history",
+            "file",
+            "path"
+        )
 )
 
 

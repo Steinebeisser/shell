@@ -59,6 +59,11 @@ bool tokenize_command(const char *line, int *out_argc, char ***out_argv) {
             arg_len += 1;
         } while(*line && ((quote && *line != quote) || (!quote && !isspace(*line) && *line != '=' && *line != '(')));
 
+        if (quote && *line == quote) {
+            line++;
+            arg_len++;
+        }
+
         LOG_DEBUG("Allocation %d Bytes for arg %d in %s", arg_len, argc, line_start);
         char *arg = strndup(arg_start, arg_len);
         if (!arg) {

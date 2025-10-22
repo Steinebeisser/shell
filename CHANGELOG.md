@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0] - 2025-10-22
+- bug fixes, help improvements
+    - fixed quotes not parsing correctly
+    - added help for config fields with help aliases
+    - added config help
+    - added help color
+
 ## [0.8.0] - 2025-10-15
 - internal restruct, config, extend help
     - xmacro for creating config
